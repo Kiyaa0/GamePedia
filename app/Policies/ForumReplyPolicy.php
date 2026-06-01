@@ -24,7 +24,7 @@ class ForumReplyPolicy
 
     public function update(User $user, ForumReply $forumReply): bool
     {
-        return $user->id === $forumReply->user_id || $user->role === 'admin';
+        return $user->id === $forumReply->user_id;
     }
 
     public function delete(User $user, ForumReply $forumReply): bool

@@ -24,7 +24,7 @@ class ForumPostPolicy
 
     public function update(User $user, ForumPost $forumPost): bool
     {
-        return $user->id === $forumPost->user_id || $user->role === 'admin';
+        return $user->id === $forumPost->user_id;
     }
 
     public function delete(User $user, ForumPost $forumPost): bool

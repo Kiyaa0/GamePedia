@@ -51,7 +51,6 @@ class WishlistController extends Controller
 
         $validated = $request->validate([
             'status' => ['required', 'in:want_to_buy,owned,playing'],
-            'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $wishlistItem->update($validated);

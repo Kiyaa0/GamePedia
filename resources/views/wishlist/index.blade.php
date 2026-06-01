@@ -45,15 +45,11 @@
                                 <div class="mt-2 mb-3">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                         {{ $item->status === 'owned' ? 'bg-green-100 text-green-800' : ($item->status === 'playing' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                        {{ str_replace('_', ' ', ucfirst($item->status)) }}
+                                        {{ $item->status_label }}
                                     </span>
                                 </div>
 
-                                @if ($item->notes)
-                                    <p class="text-sm text-gray-600 mb-3">{{ Str::limit($item->notes, 80) }}</p>
-                                @endif
-
-                                <div class="flex gap-2 mt-auto">
+                                <div class="flex gap-2">
                                     <form action="{{ route('wishlist.update', $item) }}" method="POST" class="flex-1">
                                         @csrf
                                         @method('PATCH')

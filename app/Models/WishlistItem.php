@@ -25,4 +25,14 @@ class WishlistItem extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->status) {
+            'want_to_buy' => 'Want to Buy',
+            'owned' => 'Owned',
+            'playing' => 'Playing',
+            default => ucfirst(str_replace('_', ' ', $this->status)),
+        };
+    }
 }
