@@ -32,15 +32,23 @@
                     @foreach ($items as $item)
                         <div class="bg-white rounded-lg shadow-md overflow-hidden">
                             @if ($item->game_image)
-                                <img src="{{ $item->game_image }}" alt="{{ $item->game_title }}"
-                                    class="w-full h-48 object-cover">
+                                <a href="{{ route('games.show', $item->rawg_game_id) }}">
+                                    <img src="{{ $item->game_image }}" alt="{{ $item->game_title }}"
+                                        class="w-full h-48 object-cover">
+                                </a>
                             @else
-                                <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-                                    No Image
-                                </div>
+                                <a href="{{ route('games.show', $item->rawg_game_id) }}">
+                                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+                                        No Image
+                                    </div>
+                                </a>
                             @endif
                             <div class="p-4">
-                                <h3 class="text-lg font-semibold text-gray-900">{{ $item->game_title }}</h3>
+                                <h3 class="text-lg font-semibold">
+                                    <a href="{{ route('games.show', $item->rawg_game_id) }}" class="text-gray-900 hover:text-indigo-600 transition">
+                                        {{ $item->game_title }}
+                                    </a>
+                                </h3>
 
                                 <div class="mt-2 mb-3">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
