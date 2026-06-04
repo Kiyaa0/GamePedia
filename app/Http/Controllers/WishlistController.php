@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\WishlistItem;
+use App\Services\RawgService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class WishlistController extends Controller
 {
+    public function __construct(
+        protected RawgService $rawg,
+    ) {}
+
     public function index(): View
     {
         $items = WishlistItem::where('user_id', auth()->id())
@@ -69,15 +73,11 @@ class WishlistController extends Controller
 
     public function addFromGame(Request $request, string $gameId): RedirectResponse
     {
-        $response = Http::get(config('services.rawg.base_url').'/games/'.$gameId, [
-            'key' => config('services.rawg.key'),
-        ]);
+        $game = $this->rawg->getGame($gameId);
 
-        if (! $response->successful()) {
+        if ($game === null) {
             return back()->with('error', 'Game not found.');
         }
-
-        $game = $response->json();
 
         $exists = WishlistItem::where('user_id', auth()->id())
             ->where('rawg_game_id', $gameId)

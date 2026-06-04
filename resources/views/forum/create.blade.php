@@ -1,61 +1,59 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">New Discussion</h2>
-    </x-slot>
+    <div class="max-w-2xl mx-auto">
+        <div class="mb-4">
+            <a href="{{ route('forum.index') }}" class="text-gray-400 hover:text-white text-sm transition">Kembali</a>
+        </div>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <form action="{{ route('forum.store') }}" method="POST">
-                        @csrf
+        <h1 class="text-2xl font-bold mb-6">Buat Diskusi Baru</h1>
 
-                        @if ($game)
-                            <input type="hidden" name="rawg_game_id" value="{{ $game['id'] }}">
-                            <input type="hidden" name="game_title" value="{{ $game['name'] }}">
-                            <div class="mb-4 p-3 bg-indigo-50 rounded-md">
-                                <p class="text-sm text-indigo-700">
-                                    Discussing: <strong>{{ $game['name'] }}</strong>
-                                </p>
-                            </div>
-                        @else
-                            <div class="mb-4">
-                                <x-input-label for="rawg_game_id" value="RAWG Game ID" />
-                                <x-text-input id="rawg_game_id" name="rawg_game_id" type="text" class="mt-1 block w-full"
-                                    :value="old('rawg_game_id')" required placeholder="e.g. 3498" />
-                                <x-input-error :messages="$errors->get('rawg_game_id')" class="mt-2" />
-                            </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+            <form action="{{ route('forum.store') }}" method="POST">
+                @csrf
 
-                            <div class="mb-4">
-                                <x-input-label for="game_title" value="Game Title" />
-                                <x-text-input id="game_title" name="game_title" type="text" class="mt-1 block w-full"
-                                    :value="old('game_title')" required placeholder="Grand Theft Auto V" />
-                                <x-input-error :messages="$errors->get('game_title')" class="mt-2" />
-                            </div>
-                        @endif
+                @if($game)
+                    <input type="hidden" name="rawg_game_id" value="{{ $game['id'] }}">
+                    <input type="hidden" name="game_title" value="{{ $game['name'] }}">
+                    <div class="mb-4 px-4 py-3 bg-indigo-600/20 border border-indigo-600/40 rounded-md">
+                        <p class="text-sm text-indigo-300">Diskusi untuk: <strong>{{ $game['name'] }}</strong></p>
+                    </div>
+                @else
+                    <div class="mb-4">
+                        <label class="text-xs text-gray-400 block mb-1">RAWG Game ID</label>
+                        <input type="text" name="rawg_game_id" value="{{ old('rawg_game_id') }}"
+                            class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                            required placeholder="e.g. 3498">
+                        <x-input-error :messages="$errors->get('rawg_game_id')" class="mt-1" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-xs text-gray-400 block mb-1">Nama Game</label>
+                        <input type="text" name="game_title" value="{{ old('game_title') }}"
+                            class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                            required placeholder="Grand Theft Auto V">
+                        <x-input-error :messages="$errors->get('game_title')" class="mt-1" />
+                    </div>
+                @endif
 
-                        <div class="mb-4">
-                            <x-input-label for="title" value="Post Title" />
-                            <x-text-input id="title" name="title" type="text" class="mt-1 block w-full"
-                                :value="old('title')" required placeholder="What do you want to discuss?" />
-                            <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                        </div>
-
-                        <div class="mb-4">
-                            <x-input-label for="body" value="Content" />
-                            <textarea id="body" name="body" rows="8"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                required placeholder="Write your thoughts...">{{ old('body') }}</textarea>
-                            <x-input-error :messages="$errors->get('body')" class="mt-2" />
-                        </div>
-
-                        <div class="flex items-center gap-4">
-                            <x-primary-button>Create Post</x-primary-button>
-                            <a href="{{ route('forum.index') }}" class="text-gray-600 hover:text-gray-800">Cancel</a>
-                        </div>
-                    </form>
+                <div class="mb-4">
+                    <label class="text-xs text-gray-400 block mb-1">Judul Post</label>
+                    <input type="text" name="title" value="{{ old('title') }}"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                        required placeholder="Apa yang ingin kamu diskusikan?">
+                    <x-input-error :messages="$errors->get('title')" class="mt-1" />
                 </div>
-            </div>
+
+                <div class="mb-6">
+                    <label class="text-xs text-gray-400 block mb-1">Isi</label>
+                    <textarea name="body" rows="8"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 resize-none"
+                        required placeholder="Tulis isi diskusi kamu...">{{ old('body') }}</textarea>
+                    <x-input-error :messages="$errors->get('body')" class="mt-1" />
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button class="bg-indigo-600 hover:bg-indigo-700 px-5 py-2 rounded-md text-sm font-medium transition">Buat Post</button>
+                    <a href="{{ route('forum.index') }}" class="text-gray-400 hover:text-white text-sm transition">Batal</a>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

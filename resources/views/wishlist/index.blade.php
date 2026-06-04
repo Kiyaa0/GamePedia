@@ -1,93 +1,55 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Wishlist</h2>
-    </x-slot>
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Wishlist Saya</h1>
+        <span class="text-gray-400 text-sm">{{ $items->count() }} game</span>
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('success'))
-                <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
+    @if($items->isEmpty())
+        <div class="text-center py-20 text-gray-500">
+            <p class="mb-4">Wishlist kamu masih kosong.</p>
+            <a href="{{ route('games.index') }}" class="bg-indigo-600 hover:bg-indigo-700 px-6 py-2.5 rounded-md text-sm transition">Browse Game</a>
+        </div>
+    @else
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            @foreach($items as $item)
+                <div class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
+                    <a href="{{ route('games.show', $item->rawg_game_id) }}">
+                        <img src="{{ $item->game_image ?? 'https://via.placeholder.com/300x170?text=No+Image' }}"
+                            alt="{{ $item->game_title }}"
+                            class="w-full aspect-video object-cover hover:opacity-80 transition">
+                    </a>
+                    <div class="p-4">
+                        <a href="{{ route('games.show', $item->rawg_game_id) }}"
+                            class="font-semibold text-sm hover:text-indigo-400 transition block truncate">{{ $item->game_title }}</a>
 
-            @if (session('error'))
-                <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                    {{ session('error') }}
-                </div>
-            @endif
+                        <div class="mt-1 mb-3">
+                            <span class="text-xs px-2 py-0.5 rounded-full
+                                {{ $item->status === 'owned' ? 'bg-green-900/50 text-green-400 border border-green-800' :
+                                   ($item->status === 'playing' ? 'bg-blue-900/50 text-blue-400 border border-blue-800' :
+                                   'bg-yellow-900/50 text-yellow-400 border border-yellow-800') }}">
+                                {{ $item->status_label }}
+                            </span>
+                        </div>
 
-            @if ($items->isEmpty())
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-center text-gray-500">
-                        <p class="text-lg mb-4">Your wishlist is empty.</p>
-                        <a href="{{ route('games.index') }}"
-                            class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition">
-                            Browse Games
-                        </a>
+                        <form method="POST" action="{{ route('wishlist.update', $item) }}">
+                            @csrf @method('PATCH')
+                            <select name="status" onchange="this.form.submit()"
+                                class="w-full bg-gray-800 border border-gray-700 rounded-md px-3 py-1.5 text-xs text-white mb-3 focus:outline-none focus:border-indigo-500">
+                                <option value="want_to_buy" {{ $item->status === 'want_to_buy' ? 'selected' : '' }}>Want to Buy</option>
+                                <option value="owned" {{ $item->status === 'owned' ? 'selected' : '' }}>Owned</option>
+                                <option value="playing" {{ $item->status === 'playing' ? 'selected' : '' }}>Playing</option>
+                            </select>
+                        </form>
+
+                        <form method="POST" action="{{ route('wishlist.destroy', $item) }}"
+                            onsubmit="return confirm('Hapus dari wishlist?')">
+                            @csrf @method('DELETE')
+                            <button class="text-red-400 hover:text-red-300 text-xs transition">Hapus</button>
+                        </form>
                     </div>
                 </div>
-            @else
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    @foreach ($items as $item)
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                            @if ($item->game_image)
-                                <a href="{{ route('games.show', $item->rawg_game_id) }}">
-                                    <img src="{{ $item->game_image }}" alt="{{ $item->game_title }}"
-                                        class="w-full h-48 object-cover">
-                                </a>
-                            @else
-                                <a href="{{ route('games.show', $item->rawg_game_id) }}">
-                                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">
-                                        No Image
-                                    </div>
-                                </a>
-                            @endif
-                            <div class="p-4">
-                                <h3 class="text-lg font-semibold">
-                                    <a href="{{ route('games.show', $item->rawg_game_id) }}" class="text-gray-900 hover:text-indigo-600 transition">
-                                        {{ $item->game_title }}
-                                    </a>
-                                </h3>
-
-                                <div class="mt-2 mb-3">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                        {{ $item->status === 'owned' ? 'bg-green-100 text-green-800' : ($item->status === 'playing' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800') }}">
-                                        {{ $item->status_label }}
-                                    </span>
-                                </div>
-
-                                <div class="flex gap-2">
-                                    <form action="{{ route('wishlist.update', $item) }}" method="POST" class="flex-1">
-                                        @csrf
-                                        @method('PATCH')
-                                        <select name="status" onchange="this.form.submit()"
-                                            class="w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                            <option value="want_to_buy" {{ $item->status === 'want_to_buy' ? 'selected' : '' }}>Want to Buy</option>
-                                            <option value="owned" {{ $item->status === 'owned' ? 'selected' : '' }}>Owned</option>
-                                            <option value="playing" {{ $item->status === 'playing' ? 'selected' : '' }}>Playing</option>
-                                        </select>
-                                    </form>
-
-                                    <form action="{{ route('wishlist.destroy', $item) }}" method="POST"
-                                        onsubmit="return confirm('Remove from wishlist?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="px-3 py-2 bg-red-100 text-red-600 text-xs rounded-md hover:bg-red-200 transition">
-                                            Remove
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="mt-6">
-                    {{ $items->links() }}
-                </div>
-            @endif
+            @endforeach
         </div>
-    </div>
+        <div class="mt-6">{{ $items->links() }}</div>
+    @endif
 </x-app-layout>

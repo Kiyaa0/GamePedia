@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\ForumPost;
+use App\Services\RawgService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class ForumPostController extends Controller
 {
+    public function __construct(
+        protected RawgService $rawg,
+    ) {}
+
     public function index(Request $request): View
     {
         $query = ForumPost::with('user')->withCount('replies')->latest();
@@ -20,8 +24,10 @@ class ForumPostController extends Controller
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->input('search').'%')
-                    ->orWhere('body', 'like', '%'.$request->input('search').'%');
+                $search = $request->input('search');
+                $q->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('body', 'like', '%'.$search.'%')
+                    ->orWhere('game_title', 'like', '%'.$search.'%');
             });
         }
 
@@ -34,10 +40,7 @@ class ForumPostController extends Controller
     {
         $game = null;
         if ($request->filled('game_id')) {
-            $response = Http::get(config('services.rawg.base_url').'/games/'.$request->input('game_id'), [
-                'key' => config('services.rawg.key'),
-            ]);
-            $game = $response->successful() ? $response->json() : null;
+            $game = $this->rawg->getGame($request->input('game_id'));
         }
 
         return view('forum.create', compact('game'));

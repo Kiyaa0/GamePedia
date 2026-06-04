@@ -2,24 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\WishlistItem;
+use App\Services\RawgService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class GameController extends Controller
 {
+    public function __construct(
+        protected RawgService $rawg,
+    ) {}
+
     public function index(Request $request)
     {
         $search = $request->input('search');
         $page = $request->input('page', 1);
         $genre = $request->input('genre');
-        $sortBy = $request->input('sort', '-rating');
+        $sortBy = $request->input('sort', '');
 
-        $params = [
-            'key' => config('services.rawg.key'),
-            'page' => $page,
-            'page_size' => 20,
-            'ordering' => $sortBy,
-        ];
+        $params = ['page' => $page];
+
+        if ($sortBy !== '') {
+            $params['ordering'] = $sortBy;
+        }
 
         if ($search) {
             $params['search'] = $search;
@@ -29,15 +33,9 @@ class GameController extends Controller
             $params['genres'] = $genre;
         }
 
-        $response = Http::get(config('services.rawg.base_url').'/games', $params);
+        $data = $this->rawg->getGames($params);
 
-        $data = $response->successful() ? $response->json() : ['results' => [], 'count' => 0];
-
-        $genresResponse = Http::get(config('services.rawg.base_url').'/genres', [
-            'key' => config('services.rawg.key'),
-        ]);
-
-        $genres = $genresResponse->successful() ? $genresResponse->json()['results'] ?? [] : [];
+        $genres = $this->rawg->getGenres();
 
         return view('games.index', [
             'games' => $data['results'] ?? [],
@@ -52,24 +50,20 @@ class GameController extends Controller
 
     public function show(string $id)
     {
-        $response = Http::get(config('services.rawg.base_url').'/games/'.$id, [
-            'key' => config('services.rawg.key'),
-        ]);
+        $game = $this->rawg->getGame($id);
 
-        if (! $response->successful()) {
+        if ($game === null) {
             abort(404);
         }
 
-        $game = $response->json();
+        $screenshots = $this->rawg->getScreenshots($id);
 
-        $screenshotsResponse = Http::get(config('services.rawg.base_url').'/games/'.$id.'/screenshots', [
-            'key' => config('services.rawg.key'),
-        ]);
+        $inWishlist = auth()->check()
+            ? WishlistItem::where('user_id', auth()->id())
+                ->where('rawg_game_id', $id)
+                ->exists()
+            : false;
 
-        $screenshots = $screenshotsResponse->successful()
-            ? $screenshotsResponse->json()['results'] ?? []
-            : [];
-
-        return view('games.show', compact('game', 'screenshots'));
+        return view('games.show', compact('game', 'screenshots', 'inWishlist'));
     }
 }
