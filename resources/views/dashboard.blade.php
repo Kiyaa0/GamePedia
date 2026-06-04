@@ -45,7 +45,7 @@
             </div>
             @php $recentWishlist = auth()->user()->wishlistItems()->latest()->take(5)->get(); @endphp
             @if($recentWishlist->isEmpty())
-                <div class="bg-gray-900 border border-gray-800 rounded-lg p-8 text-center text-gray-500 text-sm">
+                <div class="bg-gray-900 border border-gray-800 rounded-lg p-8 text-center text-gray-700 text-sm">
                     Belum ada game di wishlist.
                 </div>
             @else
