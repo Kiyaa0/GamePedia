@@ -27,6 +27,7 @@ class GameController extends Controller
 
         if ($search) {
             $params['search'] = $search;
+            $params['search_precise'] = true;
         }
 
         if ($genre) {
@@ -46,6 +47,23 @@ class GameController extends Controller
             'currentPage' => $page,
             'genres' => $genres,
         ]);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+
+        if (strlen((string) $query) < 2) {
+            return response()->json([]);
+        }
+
+        $data = $this->rawg->getGames([
+            'search' => $query,
+            'search_precise' => true,
+            'page_size' => 8,
+        ]);
+
+        return response()->json($data['results'] ?? []);
     }
 
     public function show(string $id)

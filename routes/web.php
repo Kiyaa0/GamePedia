@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/games', [GameController::class, 'index'])->name('games.index');
+    Route::get('/games/search', [GameController::class, 'search'])->name('games.search');
     Route::get('/games/{id}', [GameController::class, 'show'])->name('games.show');
 
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');

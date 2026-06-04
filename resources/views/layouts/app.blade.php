@@ -51,5 +51,6 @@
         &copy; {{ date('Y') }} GamePedia
     </footer>
 
+    @stack('scripts')
 </body>
 </html>
