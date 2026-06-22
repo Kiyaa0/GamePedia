@@ -9,23 +9,9 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-gray-950 text-white">
+<body class="font-sans antialiased bg-[#0b0c2a] text-white">
 
-    <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-            <a href="{{ route('games.index') }}" class="text-lg font-bold text-indigo-400 tracking-tight">GamePedia</a>
-            <div class="flex items-center gap-6 text-sm">
-                <a href="{{ route('games.index') }}" class="text-gray-400 hover:text-white transition">Browse</a>
-                <a href="{{ route('wishlist.index') }}" class="text-gray-400 hover:text-white transition">Wishlist</a>
-                <a href="{{ route('forum.index') }}" class="text-gray-400 hover:text-white transition">Forum</a>
-                <a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-white transition">Dashboard</a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="bg-indigo-600 hover:bg-indigo-700 px-4 py-1.5 rounded-md text-sm text-white transition">Logout</button>
-                </form>
-            </div>
-        </div>
-    </nav>
+    @include('layouts.navigation')
 
     @if(session('success'))
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
@@ -47,7 +33,7 @@
         {{ $slot }}
     </main>
 
-    <footer class="text-center text-gray-600 text-xs py-6 mt-10 border-t border-gray-800">
+    <footer class="text-center text-gray-600 text-xs py-6 mt-10 border-t border-[#2a2a2a]">
         &copy; {{ date('Y') }} GamePedia
     </footer>
 

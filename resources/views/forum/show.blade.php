@@ -5,10 +5,10 @@
         </div>
 
         {{-- Post Utama --}}
-        <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-6">
+        <div class="bg-gray-900 border border-[#2a2a2a] rounded-lg p-6 mb-6">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-semibold text-sm">
+                    <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center font-semibold text-sm">
                         {{ strtoupper(substr($forumPost->user->name, 0, 1)) }}
                     </div>
                     <div>
@@ -33,22 +33,25 @@
 
             <h1 class="text-xl font-bold mb-2">{{ $forumPost->title }}</h1>
             <p class="text-xs text-gray-500 mb-4">
-                Game: <a href="{{ route('games.show', $forumPost->rawg_game_id) }}" class="text-indigo-400 hover:text-indigo-300">{{ $forumPost->game_title }}</a>
+                Game: <a href="{{ route('games.show', $forumPost->rawg_game_id) }}" class="text-red-400 hover:text-red-300">{{ $forumPost->game_title }}</a>
             </p>
             <p class="text-gray-300 text-sm leading-relaxed">{{ $forumPost->body }}</p>
         </div>
 
         {{-- Replies --}}
-        <h3 class="font-semibold mb-4 text-sm text-gray-300">Balasan ({{ $forumPost->replies->count() }})</h3>
+        <div class="flex items-center gap-2 mb-4">
+            <span class="inline-block w-[14px] h-[1px] bg-[#e21c1c]"></span>
+            <h3 class="font-semibold text-sm text-gray-300">Balasan ({{ $forumPost->replies->count() }})</h3>
+        </div>
 
         @if($forumPost->replies->isEmpty())
-            <div class="bg-gray-900 border border-gray-800 rounded-lg p-6 text-center text-gray-500 text-sm mb-6">
+            <div class="bg-gray-900 border border-[#2a2a2a] rounded-lg p-6 text-center text-gray-500 text-sm mb-6">
                 Belum ada balasan.
             </div>
         @else
             <div class="space-y-3 mb-6">
                 @foreach($forumPost->replies as $reply)
-                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+                    <div class="bg-gray-900 border border-[#2a2a2a] rounded-lg p-4">
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-xs font-semibold">
@@ -81,14 +84,17 @@
 
         {{-- Form Reply --}}
         @auth
-            <div class="bg-gray-900 border border-gray-800 rounded-lg p-5">
-                <h4 class="font-medium text-sm mb-3">Tulis Balasan</h4>
+            <div class="bg-gray-900 border border-[#2a2a2a] rounded-lg p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="inline-block w-[14px] h-[1px] bg-[#e21c1c]"></span>
+                    <h4 class="font-medium text-sm">Tulis Balasan</h4>
+                </div>
                 <form action="{{ route('replies.store', $forumPost) }}" method="POST">
                     @csrf
                     <textarea name="body" rows="4" placeholder="Tulis balasan kamu..."
-                        class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 resize-none mb-3" required></textarea>
+                        class="w-full bg-gray-800 border border-[#2a2a2a] rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500 resize-none mb-3" required></textarea>
                     <x-input-error :messages="$errors->get('body')" class="mb-2" />
-                    <button class="bg-indigo-600 hover:bg-indigo-700 px-5 py-2 rounded-md text-sm font-medium transition">Kirim Balasan</button>
+                    <button class="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-md text-sm font-medium transition">Kirim Balasan</button>
                 </form>
             </div>
         @endauth
