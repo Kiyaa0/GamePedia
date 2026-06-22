@@ -1,42 +1,37 @@
 <x-layouts.game>
     <x-landing.hero />
 
-    {{-- Trending Games --}}
-    <section class="py-16">
+    {{-- Trending Now --}}
+    <section class="py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center gap-2 mb-8">
-                <span class="inline-block w-[14px] h-[1px] bg-[#e21c1c]"></span>
-                <h2 class="text-xl font-bold text-white">Trending Now</h2>
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-3">
+                    <span class="inline-block w-5 h-px bg-[#E51920]"></span>
+                    <h2 class="text-lg font-bold tracking-[0.15em] text-white uppercase">Trending Now</h2>
+                </div>
+                <a href="{{ route('games.index') }}" class="text-xs text-gray-500 hover:text-white uppercase tracking-widest transition">View All →</a>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px bg-[#2a2a2a] rounded-lg overflow-hidden">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @php
                     $trending = [
-                        ['title' => 'Elden Ring', 'year' => '2022', 'rating' => '4.8', 'genre' => 'RPG', 'img' => 'https://via.placeholder.com/300x170/1a1a2e/fff?text=ER'],
-                        ['title' => 'God of War Ragnarök', 'year' => '2022', 'rating' => '4.9', 'genre' => 'Action', 'img' => 'https://via.placeholder.com/300x170/16213e/fff?text=GOW'],
-                        ['title' => 'Zelda: Tears of Kingdom', 'year' => '2023', 'rating' => '5.0', 'genre' => 'Adventure', 'img' => 'https://via.placeholder.com/300x170/0f3460/fff?text=Zelda'],
-                        ['title' => 'Cyberpunk 2077', 'year' => '2020', 'rating' => '4.2', 'genre' => 'RPG', 'img' => 'https://via.placeholder.com/300x170/1a1a2e/fff?text=CP77'],
-                        ['title' => 'Red Dead Redemption 2', 'year' => '2018', 'rating' => '4.9', 'genre' => 'Action', 'img' => 'https://via.placeholder.com/300x170/16213e/fff?text=RDR2'],
-                        ['title' => 'The Witcher 3', 'year' => '2015', 'rating' => '4.8', 'genre' => 'RPG', 'img' => 'https://via.placeholder.com/300x170/0f3460/fff?text=TW3'],
+                        ['title' => 'Crimson Veil', 'rating' => '9.2', 'platform' => 'pc · ps5', 'img' => 'https://via.placeholder.com/400x225/1a1a1a/fff?text=CV'],
+                        ['title' => 'Neon Dynasty', 'rating' => '8.8', 'platform' => 'pc · xbox', 'img' => 'https://via.placeholder.com/400x225/1a1a1a/fff?text=ND'],
+                        ['title' => 'Starfall Legacy', 'rating' => '9.5', 'platform' => 'pc · ps5 · xbox', 'img' => 'https://via.placeholder.com/400x225/1a1a1a/fff?text=SL'],
                     ];
                 @endphp
                 @foreach($trending as $game)
-                    <a href="{{ route('games.index') }}"
-                        class="bg-gray-900 hover:bg-gray-800/80 transition block group"
-                        style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%)">
-                        <div class="relative aspect-video overflow-hidden">
+                    <a href="{{ route('games.index') }}" class="group block">
+                        <div class="relative aspect-video bg-[#1a1a1a] overflow-hidden"
+                             style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)">
                             <img src="{{ $game['img'] }}" alt="{{ $game['title'] }}"
                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                                 loading="lazy">
-                            <span class="absolute bottom-2 left-2 text-xs font-bold px-1.5 py-0.5 rounded bg-red-600 text-white">
-                                {{ $game['rating'] }}
-                            </span>
+                            <span class="absolute bottom-3 left-3 text-lg font-black text-[#E51920]">{{ $game['rating'] }}</span>
                         </div>
-                        <div class="p-3">
-                            <p class="text-sm font-semibold truncate group-hover:text-red-400 transition">{{ $game['title'] }}</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <span class="text-xs text-gray-500">{{ $game['year'] }}</span>
-                                <span class="text-xs text-gray-500">{{ $game['genre'] }}</span>
-                            </div>
+                        <div class="mt-4">
+                            <h3 class="text-sm font-bold tracking-[0.15em] text-white uppercase">{{ $game['title'] }}</h3>
+                            <p class="text-xs text-gray-500 mt-1">{{ $game['platform'] }}</p>
                         </div>
                     </a>
                 @endforeach
@@ -45,11 +40,11 @@
     </section>
 
     {{-- Categories --}}
-    <section class="pb-16">
+    <section class="pb-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center gap-2 mb-8">
-                <span class="inline-block w-[14px] h-[1px] bg-[#e21c1c]"></span>
-                <h2 class="text-xl font-bold text-white">Browse by Genre</h2>
+            <div class="flex items-center gap-3 mb-10">
+                <span class="inline-block w-5 h-px bg-[#E51920]"></span>
+                <h2 class="text-lg font-bold tracking-[0.15em] text-white uppercase">Browse by Genre</h2>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 @php
@@ -57,8 +52,8 @@
                 @endphp
                 @foreach($genres as $genre)
                     <a href="{{ route('games.index', ['genre' => strtolower($genre)]) }}"
-                        class="bg-gray-900 hover:bg-gray-800 border border-[#2a2a2a] rounded-lg px-5 py-6 text-center transition group">
-                        <p class="text-sm font-bold text-gray-300 group-hover:text-red-400 transition">{{ $genre }}</p>
+                        class="bg-[#1a1a1a] hover:bg-[#222] border border-white/5 rounded px-5 py-6 text-center transition group">
+                        <p class="text-sm font-bold text-gray-400 group-hover:text-[#E51920] transition uppercase tracking-widest">{{ $genre }}</p>
                     </a>
                 @endforeach
             </div>
@@ -66,7 +61,7 @@
     </section>
 
     {{-- Footer --}}
-    <footer class="text-center text-gray-600 text-xs py-6 border-t border-[#2a2a2a]">
+    <footer class="text-center text-gray-600 text-xs py-6 border-t border-white/5">
         &copy; {{ date('Y') }} GamePedia. All rights reserved.
     </footer>
 </x-layouts.game>
