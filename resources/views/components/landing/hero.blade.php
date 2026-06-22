@@ -23,7 +23,7 @@
                             <p class="text-gray-300 text-sm md:text-base mb-6">Rise, Tarnished, and explore the Lands Between in this epic fantasy RPG.</p>
                             <div class="flex items-center gap-4">
                                 {{-- Play Now with diagonal clip + play icon --}}
-                                <a href="#" class="inline-flex items-center gap-2 bg-[#e21c1c] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-5 py-3 transition"
+                                <a href="{{ route('games.index') }}" class="inline-flex items-center gap-2 bg-[#e21c1c] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-5 py-3 transition"
                                    style="clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 8px 100%);">
                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M8 5v14l11-7z"/>
@@ -31,7 +31,7 @@
                                     Play Now
                                 </a>
                                 {{-- View Details secondary link --}}
-                                <a href="#" class="text-sm text-gray-400 hover:text-white transition border-b border-[#2a2a2a] hover:border-white pb-0.5">
+                                <a href="{{ route('games.index') }}" class="text-sm text-gray-400 hover:text-white transition border-b border-[#2a2a2a] hover:border-white pb-0.5">
                                     View Details
                                 </a>
                             </div>
@@ -61,14 +61,14 @@
                             <p class="text-xs text-[#666] mb-1">PS5 · PS4 · PC · Action Adventure</p>
                             <p class="text-gray-300 text-sm md:text-base mb-6">Kratos and Atreus journey through the Nine Realms in search of answers.</p>
                             <div class="flex items-center gap-4">
-                                <a href="#" class="inline-flex items-center gap-2 bg-[#e21c1c] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-5 py-3 transition"
+                                <a href="{{ route('games.index') }}" class="inline-flex items-center gap-2 bg-[#e21c1c] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-5 py-3 transition"
                                    style="clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 8px 100%);">
                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M8 5v14l11-7z"/>
                                     </svg>
                                     Play Now
                                 </a>
-                                <a href="#" class="text-sm text-gray-400 hover:text-white transition border-b border-[#2a2a2a] hover:border-white pb-0.5">
+                                <a href="{{ route('games.index') }}" class="text-sm text-gray-400 hover:text-white transition border-b border-[#2a2a2a] hover:border-white pb-0.5">
                                     View Details
                                 </a>
                             </div>
@@ -97,14 +97,14 @@
                             <p class="text-xs text-[#666] mb-1">Switch · Open World · Adventure</p>
                             <p class="text-gray-300 text-sm md:text-base mb-6">Embark on an unforgettable journey across the skies and depths of Hyrule.</p>
                             <div class="flex items-center gap-4">
-                                <a href="#" class="inline-flex items-center gap-2 bg-[#e21c1c] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-5 py-3 transition"
+                                <a href="{{ route('games.index') }}" class="inline-flex items-center gap-2 bg-[#e21c1c] hover:bg-red-600 text-white text-xs font-bold uppercase tracking-widest px-5 py-3 transition"
                                    style="clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 8px 100%);">
                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M8 5v14l11-7z"/>
                                     </svg>
                                     Play Now
                                 </a>
-                                <a href="#" class="text-sm text-gray-400 hover:text-white transition border-b border-[#2a2a2a] hover:border-white pb-0.5">
+                                <a href="{{ route('games.index') }}" class="text-sm text-gray-400 hover:text-white transition border-b border-[#2a2a2a] hover:border-white pb-0.5">
                                     View Details
                                 </a>
                             </div>

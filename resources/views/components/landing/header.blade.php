@@ -37,7 +37,7 @@
                         </svg>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-md transition">Login</a>
+                    <a href="{{ route('login') }}" class="bg-red-500 hover:bg-red-600 text-white text-sm font-bold px-4 py-2 rounded-md transition">Login</a>
                 @endauth
             </div>
 
@@ -69,7 +69,7 @@
                         </svg>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm text-indigo-400 font-bold hover:text-indigo-300">Login</a>
+                    <a href="{{ route('login') }}" class="text-sm text-red-400 font-bold hover:text-red-300">Login</a>
                 @endauth
             </div>
         </div>
