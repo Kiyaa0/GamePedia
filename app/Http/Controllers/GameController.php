@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WishlistItem;
 use App\Services\RawgService;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
@@ -34,9 +35,12 @@ class GameController extends Controller
             $params['genres'] = $genre;
         }
 
-        $data = $this->rawg->getGames($params);
-
-        $genres = $this->rawg->getGenres();
+        try {
+            $data = $this->rawg->getGames($params);
+            $genres = $this->rawg->getGenres();
+        } catch (ConnectionException $e) {
+            return back()->with('error', 'Gagal terhubung ke server game. Silakan coba lagi.');
+        }
 
         return view('games.index', [
             'games' => $data['results'] ?? [],
@@ -45,7 +49,7 @@ class GameController extends Controller
             'genre' => $genre,
             'sortBy' => $sortBy,
             'currentPage' => $page,
-            'genres' => $genres,
+            'genres' => $genres ?? [],
         ]);
     }
 
@@ -57,24 +61,36 @@ class GameController extends Controller
             return response()->json([]);
         }
 
-        $data = $this->rawg->getGames([
-            'search' => $query,
-            'search_precise' => true,
-            'page_size' => 8,
-        ]);
+        try {
+            $data = $this->rawg->getGames([
+                'search' => $query,
+                'search_precise' => true,
+                'page_size' => 8,
+            ]);
+        } catch (ConnectionException $e) {
+            return response()->json([], 503);
+        }
 
         return response()->json($data['results'] ?? []);
     }
 
     public function show(string $id)
     {
-        $game = $this->rawg->getGame($id);
+        try {
+            $game = $this->rawg->getGame($id);
+        } catch (ConnectionException $e) {
+            return back()->with('error', 'Gagal memuat detail game. Silakan coba lagi.');
+        }
 
         if ($game === null) {
             abort(404);
         }
 
-        $screenshots = $this->rawg->getScreenshots($id);
+        try {
+            $screenshots = $this->rawg->getScreenshots($id);
+        } catch (ConnectionException $e) {
+            $screenshots = [];
+        }
 
         $inWishlist = auth()->check()
             ? WishlistItem::where('user_id', auth()->id())

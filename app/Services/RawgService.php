@@ -15,12 +15,12 @@ class RawgService
         protected string $apiKey,
     ) {}
 
-    public function getGames(array $params = [])
+    public function getGames(array $params = []): array
     {
         $cacheKey = 'rawg_games_'.md5(serialize($params));
 
         return Cache::remember($cacheKey, 3600, function () use ($params) {
-            $response = Http::get("{$this->baseUrl}/games", array_merge(
+            $response = $this->request()->get("{$this->baseUrl}/games", array_merge(
                 [
                     'key' => $this->apiKey,
                     'page_size' => 20,
@@ -129,9 +129,9 @@ class RawgService
 
     protected function request(): PendingRequest
     {
-        return Http::timeout(10)
-            ->connectTimeout(5)
-            ->retry([100, 200, 500], function (ConnectionException|RequestException $exception, PendingRequest $request) {
+        return Http::timeout(15)
+            ->connectTimeout(10)
+            ->retry(3, 1000, function (ConnectionException|RequestException $exception, PendingRequest $request) {
                 return $exception instanceof ConnectionException
                     || ($exception instanceof RequestException && $exception->response->serverError());
             })

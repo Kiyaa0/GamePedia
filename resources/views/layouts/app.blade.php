@@ -128,6 +128,22 @@
         </div>
     </nav>
 
+    @if (session('error'))
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+            <div class="bg-red-900/50 border border-red-800 text-red-300 px-6 py-3 rounded text-sm">
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+            <div class="bg-green-900/50 border border-green-800 text-green-300 px-6 py-3 rounded text-sm">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @yield('content')
     </main>
