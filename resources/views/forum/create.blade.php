@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="max-w-2xl mx-auto">
         <div class="mb-4">
             <a href="{{ route('forum.index') }}" class="text-gray-400 hover:text-white text-sm transition">Kembali</a>
@@ -6,7 +8,7 @@
 
         <h1 class="text-2xl font-bold mb-6">Buat Diskusi Baru</h1>
 
-        <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+        <div class="bg-[#1a1a1a] border border-white/5 rounded-lg p-6">
             <form action="{{ route('forum.store') }}" method="POST">
                 @csrf
 
@@ -22,9 +24,9 @@
                     <input type="hidden" name="game_title" x-bind:value="selectedGameTitle">
 
                     <template x-if="selectedGame">
-                        <div class="mb-4 px-4 py-3 bg-indigo-600/20 border border-indigo-600/40 rounded-md flex items-center justify-between">
-                            <p class="text-sm text-indigo-300">Diskusi untuk: <strong x-text="selectedGame.name"></strong></p>
-                            <button @click="clear()" type="button" class="text-indigo-400 hover:text-indigo-300 text-xs transition">Ganti Game</button>
+                        <div class="mb-4 px-4 py-3 bg-[#E51920]/10 border border-[#E51920]/30 rounded-md flex items-center justify-between">
+                            <p class="text-sm text-[#E51920]">Diskusi untuk: <strong x-text="selectedGame.name"></strong></p>
+                            <button @click="clear()" type="button" class="text-[#E51920] hover:text-red-400 text-xs transition">Ganti Game</button>
                         </div>
                     </template>
 
@@ -35,7 +37,7 @@
                                 @click.outside="open = false"
                                 @keydown.escape="open = false"
                                 placeholder="Ketik nama game..."
-                                class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                                class="w-full bg-[#1a1a1a] border border-white/5 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#E51920]"
                                 :class="{ 'rounded-b-none': open && results.length }">
 
                             <div x-show="loading" class="absolute right-3 top-8">
@@ -49,10 +51,10 @@
                                 x-transition:enter="transition ease-out duration-100"
                                 x-transition:enter-start="opacity-0 -translate-y-1"
                                 x-transition:enter-end="opacity-100 translate-y-0"
-                                class="absolute z-20 w-full bg-gray-800 border border-t-0 border-gray-700 rounded-b-md max-h-48 overflow-y-auto">
+                                class="absolute z-20 w-full bg-[#1a1a1a] border border-t-0 border-white/5 rounded-b-md max-h-48 overflow-y-auto">
                                 <template x-for="game in results" :key="game.id">
                                     <div @click="select(game)" @keydown.enter="select(game)"
-                                        class="px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700 hover:text-white cursor-pointer border-b border-gray-700 last:border-b-0 flex items-center justify-between">
+                                        class="px-4 py-2.5 text-sm text-gray-300 hover:bg-[#222] hover:text-white cursor-pointer border-b border-white/5 last:border-b-0 flex items-center justify-between">
                                         <span x-text="game.name"></span>
                                         <span class="text-gray-500 text-xs" x-text="game.released ? game.released.substring(0, 4) : ''"></span>
                                     </div>
@@ -60,7 +62,7 @@
                             </div>
 
                             <div x-show="open && !loading && results.length === 0 && query.length >= 2"
-                                class="absolute z-20 w-full bg-gray-800 border border-t-0 border-gray-700 rounded-b-md px-4 py-3 text-sm text-gray-500">
+                                class="absolute z-20 w-full bg-[#1a1a1a] border border-t-0 border-white/5 rounded-b-md px-4 py-3 text-sm text-gray-500">
                                 Tidak ada game ditemukan
                             </div>
 
@@ -72,7 +74,7 @@
                 <div class="mb-4">
                     <label class="text-xs text-gray-400 block mb-1">Judul Post</label>
                     <input type="text" name="title" value="{{ old('title') }}"
-                        class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                        class="w-full bg-[#1a1a1a] border border-white/5 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#E51920]"
                         required placeholder="Apa yang ingin kamu diskusikan?">
                     <x-input-error :messages="$errors->get('title')" class="mt-1" />
                 </div>
@@ -80,13 +82,13 @@
                 <div class="mb-6">
                     <label class="text-xs text-gray-400 block mb-1">Isi</label>
                     <textarea name="body" rows="8"
-                        class="w-full bg-gray-800 border border-gray-700 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 resize-none"
+                        class="w-full bg-[#1a1a1a] border border-white/5 rounded-md px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#E51920] resize-none"
                         required placeholder="Tulis isi diskusi kamu...">{{ old('body') }}</textarea>
                     <x-input-error :messages="$errors->get('body')" class="mt-1" />
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button class="bg-indigo-600 hover:bg-indigo-700 px-5 py-2 rounded-md text-sm font-medium transition">Buat Post</button>
+                    <button class="bg-[#E51920] hover:bg-red-600 px-5 py-2 rounded-md text-sm font-medium transition">Buat Post</button>
                     <a href="{{ route('forum.index') }}" class="text-gray-400 hover:text-white text-sm transition">Batal</a>
                 </div>
             </form>
@@ -145,4 +147,4 @@
             });
         </script>
     @endpush
-</x-app-layout>
+@endsection

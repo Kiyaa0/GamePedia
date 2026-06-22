@@ -6,10 +6,13 @@ use App\Http\Controllers\ForumReplyController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WishlistController;
+use App\Services\RawgService;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function (RawgService $rawg) {
+    $genres = collect($rawg->getGenres())->take(6);
+
+    return view('welcome', compact('genres'));
 });
 
 Route::get('/dashboard', function () {

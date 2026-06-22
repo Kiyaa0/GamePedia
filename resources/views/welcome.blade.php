@@ -1,4 +1,7 @@
-<x-layouts.game>
+@extends('layouts.app')
+
+@section('content')
+    {{-- Hero --}}
     <x-landing.hero />
 
     {{-- Trending Now --}}
@@ -39,7 +42,7 @@
         </div>
     </section>
 
-    {{-- Categories --}}
+    {{-- Browse by Genre --}}
     <section class="pb-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center gap-3 mb-10">
@@ -47,21 +50,13 @@
                 <h2 class="text-lg font-bold tracking-[0.15em] text-white uppercase">Browse by Genre</h2>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                @php
-                    $genres = ['Action', 'RPG', 'Adventure', 'Strategy', 'Simulation', 'Sports'];
-                @endphp
                 @foreach($genres as $genre)
-                    <a href="{{ route('games.index', ['genre' => strtolower($genre)]) }}"
+                    <a href="{{ route('games.index', ['genre' => $genre['slug']]) }}"
                         class="bg-[#1a1a1a] hover:bg-[#222] border border-white/5 rounded px-5 py-6 text-center transition group">
-                        <p class="text-sm font-bold text-gray-400 group-hover:text-[#E51920] transition uppercase tracking-widest">{{ $genre }}</p>
+                        <p class="text-sm font-bold text-gray-400 group-hover:text-[#E51920] transition uppercase tracking-widest">{{ $genre['name'] }}</p>
                     </a>
                 @endforeach
             </div>
         </div>
     </section>
-
-    {{-- Footer --}}
-    <footer class="text-center text-gray-600 text-xs py-6 border-t border-white/5">
-        &copy; {{ date('Y') }} GamePedia. All rights reserved.
-    </footer>
-</x-layouts.game>
+@endsection

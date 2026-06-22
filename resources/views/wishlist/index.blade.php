@@ -1,7 +1,9 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-2">
-            <span class="inline-block w-[14px] h-[1px] bg-[#e21c1c]"></span>
+            <span class="inline-block w-[14px] h-[1px] bg-[#E51920]"></span>
             <h1 class="text-2xl font-bold">Wishlist Saya</h1>
         </div>
         <span class="text-gray-400 text-sm">{{ $items->count() }} game</span>
@@ -10,13 +12,12 @@
     @if($items->isEmpty())
         <div class="text-center py-20 text-gray-500">
             <p class="mb-4">Wishlist kamu masih kosong.</p>
-            <a href="{{ route('games.index') }}" class="bg-red-500 hover:bg-red-600 px-6 py-2.5 rounded-md text-sm transition">Browse Game</a>
+            <a href="{{ route('games.index') }}" class="bg-[#E51920] hover:bg-red-600 px-6 py-2.5 rounded-md text-sm transition">Browse Game</a>
         </div>
     @else
-        {{-- grid with gap-px for hairline separators --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-[#2a2a2a] rounded-lg overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-white/5 rounded-lg overflow-hidden">
             @foreach($items as $item)
-                <div class="bg-gray-900 overflow-hidden"
+                <div class="bg-[#1a1a1a] overflow-hidden"
                      style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%)">
                     <a href="{{ route('games.show', $item->rawg_game_id) }}">
                         <img src="{{ $item->game_image ?? 'https://via.placeholder.com/300x170?text=No+Image' }}"
@@ -25,7 +26,7 @@
                     </a>
                     <div class="p-4">
                         <a href="{{ route('games.show', $item->rawg_game_id) }}"
-                            class="font-semibold text-sm hover:text-red-400 transition block truncate">{{ $item->game_title }}</a>
+                            class="font-semibold text-sm hover:text-[#E51920] transition block truncate">{{ $item->game_title }}</a>
 
                         <div class="mt-1 mb-3">
                             <span class="text-xs px-2 py-0.5 rounded-full
@@ -39,7 +40,7 @@
                         <form method="POST" action="{{ route('wishlist.update', $item) }}">
                             @csrf @method('PATCH')
                             <select name="status" onchange="this.form.submit()"
-                                class="w-full bg-gray-800 border border-[#2a2a2a] rounded-md px-3 py-1.5 text-xs text-white mb-3 focus:outline-none focus:border-red-500">
+                                class="w-full bg-[#1a1a1a] border border-white/5 rounded-md px-3 py-1.5 text-xs text-white mb-3 focus:outline-none focus:border-[#E51920]">
                                 <option value="want_to_buy" {{ $item->status === 'want_to_buy' ? 'selected' : '' }}>Want to Buy</option>
                                 <option value="owned" {{ $item->status === 'owned' ? 'selected' : '' }}>Owned</option>
                                 <option value="playing" {{ $item->status === 'playing' ? 'selected' : '' }}>Playing</option>
@@ -49,7 +50,7 @@
                         <form method="POST" action="{{ route('wishlist.destroy', $item) }}"
                             onsubmit="return confirm('Hapus dari wishlist?')">
                             @csrf @method('DELETE')
-                            <button class="text-red-400 hover:text-red-300 text-xs transition">Hapus</button>
+                            <button class="text-[#E51920] hover:text-red-400 text-xs transition">Hapus</button>
                         </form>
                     </div>
                 </div>
@@ -57,4 +58,4 @@
         </div>
         <div class="mt-6">{{ $items->links() }}</div>
     @endif
-</x-app-layout>
+@endsection

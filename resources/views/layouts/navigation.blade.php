@@ -1,12 +1,11 @@
-<nav x-data="{ open: false }" class="bg-[#070720] border-b border-[#2a2a2a] sticky top-0 z-50">
+<nav x-data="{ open: false }" class="bg-[#0f0f11] border-b border-white/5 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
 
             {{-- Logo --}}
-            <div class="shrink-0 flex items-center">
-                <a href="{{ url('/') }}" class="text-lg font-bold tracking-tight text-white">
-                    <span class="text-red-500">Game</span>Pedia
-                </a>
+            <div class="shrink-0 flex items-center gap-3">
+                <span class="inline-block w-4 h-4 bg-[#E51920] -skew-x-12"></span>
+                <a href="{{ url('/') }}" class="text-base font-bold tracking-[0.2em] text-white">GAMEPEDIA</a>
             </div>
 
             {{-- Nav Links (Desktop) --}}
@@ -33,7 +32,7 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition">
-                            <span class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                            <span class="w-8 h-8 bg-[#E51920] rounded-full flex items-center justify-center text-xs font-bold text-white">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +70,7 @@
     </div>
 
     {{-- Mobile Menu --}}
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-[#2a2a2a]">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-white/5">
         <div class="px-4 py-4 space-y-1">
             <x-responsive-nav-link :href="url('/')" :active="request()->is('/')">
                 {{ __('Home') }}
@@ -90,9 +89,9 @@
             </x-responsive-nav-link>
         </div>
 
-        <div class="pt-4 pb-3 border-t border-[#2a2a2a]">
+        <div class="pt-4 pb-3 border-t border-white/5">
             <div class="flex items-center gap-3 px-4 mb-3">
-                <span class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                <span class="w-10 h-10 bg-[#E51920] rounded-full flex items-center justify-center text-sm font-bold text-white">
                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                 </span>
                 <div class="text-sm">
