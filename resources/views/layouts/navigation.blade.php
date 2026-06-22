@@ -4,13 +4,16 @@
 
             {{-- Logo --}}
             <div class="shrink-0 flex items-center">
-                <a href="{{ route('dashboard') }}" class="text-lg font-bold tracking-tight text-white">
+                <a href="{{ url('/') }}" class="text-lg font-bold tracking-tight text-white">
                     <span class="text-red-500">Game</span>Pedia
                 </a>
             </div>
 
             {{-- Nav Links (Desktop) --}}
             <div class="hidden sm:flex sm:items-center sm:gap-1">
+                <x-nav-link :href="url('/')" :active="request()->is('/')">
+                    {{ __('Home') }}
+                </x-nav-link>
                 <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                     {{ __('Dashboard') }}
                 </x-nav-link>
@@ -70,6 +73,9 @@
     {{-- Mobile Menu --}}
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-[#2a2a2a]">
         <div class="px-4 py-4 space-y-1">
+            <x-responsive-nav-link :href="url('/')" :active="request()->is('/')">
+                {{ __('Home') }}
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
