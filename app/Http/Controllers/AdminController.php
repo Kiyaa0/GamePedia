@@ -12,13 +12,13 @@ class AdminController extends Controller
     {
         $selectedUserId = $request->input('user');
 
-        $users = User::with(['wishlistItems' => function ($q) {
+        $users = User::where('role', 'user')->with(['wishlistItems' => function ($q) {
             $q->latest();
         }])->when($selectedUserId, function ($q) use ($selectedUserId) {
             $q->whereKey($selectedUserId);
         })->get();
 
-        $totalUsers = User::count();
+        $totalUsers = User::where('role', 'user')->count();
         $totalWishlisted = WishlistItem::count();
         $totalOwned = WishlistItem::where('status', 'owned')->count();
 

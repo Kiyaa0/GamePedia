@@ -16,17 +16,19 @@
                         <p class="text-xs text-gray-500">{{ $forumPost->created_at->diffForHumans() }}</p>
                     </div>
                 </div>
-                @can('update', $forumPost)
-                    <div class="flex gap-2">
+                <div class="flex gap-2">
+                    @can('update', $forumPost)
                         <a href="{{ route('forum.edit', $forumPost) }}"
                             class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-sm rounded-md transition">Edit</a>
+                    @endcan
+                    @can('delete', $forumPost)
                         <form action="{{ route('forum.destroy', $forumPost) }}" method="POST"
                             onsubmit="return confirm('Hapus post ini?')">
                             @csrf @method('DELETE')
                             <button class="px-3 py-1 bg-red-900/50 hover:bg-red-900 text-red-400 text-sm rounded-md transition">Hapus</button>
                         </form>
-                    </div>
-                @endcan
+                    @endcan
+                </div>
             </div>
 
             <h1 class="text-xl font-bold mb-2">{{ $forumPost->title }}</h1>
@@ -57,17 +59,19 @@
                                     <p class="text-xs text-gray-500">{{ $reply->created_at->diffForHumans() }}</p>
                                 </div>
                             </div>
-                            @can('update', $reply)
-                                <div class="flex gap-2">
+                            <div class="flex gap-2">
+                                @can('update', $reply)
                                     <a href="{{ route('replies.edit', $reply) }}"
                                         class="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-xs rounded transition">Edit</a>
+                                @endcan
+                                @can('delete', $reply)
                                     <form action="{{ route('replies.destroy', $reply) }}" method="POST"
                                         onsubmit="return confirm('Hapus balasan?')">
                                         @csrf @method('DELETE')
                                         <button class="px-2 py-1 bg-red-900/50 hover:bg-red-900 text-red-400 text-xs rounded transition">Hapus</button>
                                     </form>
-                                </div>
-                            @endcan
+                                @endcan
+                            </div>
                         </div>
                         <p class="text-sm text-gray-300">{{ $reply->body }}</p>
                     </div>

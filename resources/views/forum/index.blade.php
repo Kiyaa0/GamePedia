@@ -24,15 +24,24 @@
     @else
         <div class="bg-gray-900 border border-gray-800 rounded-lg divide-y divide-gray-800">
             @foreach($posts as $post)
-                <div class="p-5 hover:bg-gray-800/50 transition">
-                    <a href="{{ route('forum.show', $post) }}" class="font-semibold hover:text-indigo-400 transition">{{ $post->title }}</a>
-                    <div class="flex flex-wrap items-center gap-3 mt-1 text-xs text-gray-500">
-                        <span>{{ $post->user->name }}</span>
-                        <span>{{ $post->created_at->diffForHumans() }}</span>
-                        <a href="{{ route('games.show', $post->rawg_game_id) }}" class="text-indigo-400 hover:text-indigo-300">{{ $post->game_title }}</a>
-                        <span>{{ $post->replies_count }} {{ Str::plural('balasan', $post->replies_count) }}</span>
+                <div class="p-5 hover:bg-gray-800/50 transition flex items-start justify-between gap-4">
+                    <div class="min-w-0 flex-1">
+                        <a href="{{ route('forum.show', $post) }}" class="font-semibold hover:text-indigo-400 transition">{{ $post->title }}</a>
+                        <div class="flex flex-wrap items-center gap-3 mt-1 text-xs text-gray-500">
+                            <span>{{ $post->user->name }}</span>
+                            <span>{{ $post->created_at->diffForHumans() }}</span>
+                            <a href="{{ route('games.show', $post->rawg_game_id) }}" class="text-indigo-400 hover:text-indigo-300">{{ $post->game_title }}</a>
+                            <span>{{ $post->replies_count }} {{ Str::plural('balasan', $post->replies_count) }}</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-2">{{ Str::limit($post->body, 200) }}</p>
                     </div>
-                    <p class="text-sm text-gray-400 mt-2">{{ Str::limit($post->body, 200) }}</p>
+                    @can('delete', $post)
+                        <form action="{{ route('forum.destroy', $post) }}" method="POST"
+                            onsubmit="return confirm('Hapus post ini?')" class="shrink-0">
+                            @csrf @method('DELETE')
+                            <button class="px-2 py-1 bg-red-900/50 hover:bg-red-900 text-red-400 text-xs rounded transition">Hapus</button>
+                        </form>
+                    @endcan
                 </div>
             @endforeach
         </div>
