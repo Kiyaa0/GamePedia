@@ -7,12 +7,31 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WishlistController;
 use App\Services\RawgService;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function (RawgService $rawg) {
-    $genres = collect($rawg->getGenres())->take(6);
+    try {
+        $genres = collect($rawg->getGenres())->take(6);
+    } catch (ConnectionException) {
+        $genres = collect([]);
+    }
 
-    return view('welcome', compact('genres'));
+    try {
+        $trendingData = $rawg->getGames(['ordering' => '-rating', 'page_size' => 3]);
+        $trendingGames = $trendingData['results'] ?? [];
+    } catch (ConnectionException) {
+        $trendingGames = [];
+    }
+
+    try {
+        $heroData = $rawg->getGames(['ordering' => '-added', 'page_size' => 3, 'dates' => '2023-01-01,2026-12-31']);
+        $heroGames = $heroData['results'] ?? [];
+    } catch (ConnectionException) {
+        $heroGames = [];
+    }
+
+    return view('welcome', compact('genres', 'trendingGames', 'heroGames'));
 });
 
 Route::get('/dashboard', function () {

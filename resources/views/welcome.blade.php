@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- Hero --}}
-    <x-landing.hero />
+    <x-landing.hero :games="$heroGames" />
 
     {{-- Trending Now --}}
     <section class="py-20">
@@ -16,25 +16,21 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                @php
-                    $trending = [
-                        ['title' => 'Crimson Veil', 'rating' => '9.2', 'platform' => 'pc · ps5', 'img' => 'https://via.placeholder.com/400x225/1a1a1a/fff?text=CV'],
-                        ['title' => 'Neon Dynasty', 'rating' => '8.8', 'platform' => 'pc · xbox', 'img' => 'https://via.placeholder.com/400x225/1a1a1a/fff?text=ND'],
-                        ['title' => 'Starfall Legacy', 'rating' => '9.5', 'platform' => 'pc · ps5 · xbox', 'img' => 'https://via.placeholder.com/400x225/1a1a1a/fff?text=SL'],
-                    ];
-                @endphp
-                @foreach($trending as $game)
-                    <a href="{{ route('games.index') }}" class="group block">
+                @foreach($trendingGames as $game)
+                    <a href="{{ route('games.show', $game['id']) }}" class="group block">
                         <div class="relative aspect-video bg-[#1a1a1a] overflow-hidden"
                              style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)">
-                            <img src="{{ $game['img'] }}" alt="{{ $game['title'] }}"
+                            <img src="{{ $game['background_image'] ?? 'https://via.placeholder.com/400x225/1a1a1a/666?text=No+Image' }}"
+                                alt="{{ $game['name'] }}"
                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                                 loading="lazy">
-                            <span class="absolute bottom-3 left-3 text-lg font-black text-[#E51920]">{{ $game['rating'] }}</span>
+                            <span class="absolute bottom-3 left-3 text-lg font-black text-[#E51920]">{{ number_format($game['rating'], 1) }}</span>
                         </div>
                         <div class="mt-4">
-                            <h3 class="text-sm font-bold tracking-[0.15em] text-white uppercase">{{ $game['title'] }}</h3>
-                            <p class="text-xs text-gray-500 mt-1">{{ $game['platform'] }}</p>
+                            <h3 class="text-sm font-bold tracking-[0.15em] text-white uppercase">{{ $game['name'] }}</h3>
+                            <p class="text-xs text-gray-500 mt-1">
+                                {{ collect($game['platforms'] ?? [])->pluck('platform.name')->take(3)->implode(' · ') }}
+                            </p>
                         </div>
                     </a>
                 @endforeach
