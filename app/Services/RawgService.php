@@ -129,9 +129,9 @@ class RawgService
 
     protected function request(): PendingRequest
     {
-        return Http::timeout(15)
-            ->connectTimeout(10)
-            ->retry(3, 1000, function (ConnectionException|RequestException $exception, PendingRequest $request) {
+        return Http::timeout(7)
+            ->connectTimeout(5)
+            ->retry(1, 500, function (ConnectionException|RequestException $exception, PendingRequest $request) {
                 return $exception instanceof ConnectionException
                     || ($exception instanceof RequestException && $exception->response->serverError());
             })

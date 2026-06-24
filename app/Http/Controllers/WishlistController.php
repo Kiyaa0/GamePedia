@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WishlistItem;
 use App\Services\RawgService;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -73,7 +74,11 @@ class WishlistController extends Controller
 
     public function addFromGame(Request $request, string $gameId): RedirectResponse
     {
-        $game = $this->rawg->getGame($gameId);
+        try {
+            $game = $this->rawg->getGame($gameId);
+        } catch (ConnectionException) {
+            return back()->with('error', 'Gagal terhubung ke server game. Silakan coba lagi.');
+        }
 
         if ($game === null) {
             return back()->with('error', 'Game not found.');

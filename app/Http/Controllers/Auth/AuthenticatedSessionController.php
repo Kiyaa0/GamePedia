@@ -26,6 +26,14 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        if (auth()->user()->suspended_at) {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->with('error', 'Akun Anda telah di-suspend.');
+        }
+
         $request->session()->regenerate();
 
         return redirect()->intended(route('dashboard', absolute: false));

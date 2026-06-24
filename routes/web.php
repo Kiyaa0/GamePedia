@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ForumPostController;
 use App\Http\Controllers\ForumReplyController;
@@ -39,9 +40,15 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/admin', [AdminController::class, 'dashboard'])
-        ->name('admin.dashboard')
-        ->middleware('can:admin');
+    Route::prefix('admin')->middleware('can:admin')->group(function () {
+        Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+        Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+        Route::patch('/users/{user}/update-role', [AdminUserController::class, 'updateRole'])->name('admin.users.update-role');
+        Route::patch('/users/{user}/suspend', [AdminUserController::class, 'suspend'])->name('admin.users.suspend');
+        Route::patch('/users/{user}/unsuspend', [AdminUserController::class, 'unsuspend'])->name('admin.users.unsuspend');
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

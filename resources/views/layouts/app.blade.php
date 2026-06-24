@@ -6,6 +6,35 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>GAMEPEDIA</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .nav-link {
+            position: relative;
+            padding-bottom: 2px;
+            transition: color 0.2s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #dc2626;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link .nav-label {
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover .nav-label {
+            color: #ffffff;
+        }
+    </style>
 </head>
 <body class="bg-[#0f0f11] text-white font-sans antialiased">
 
@@ -13,42 +42,45 @@
     $user = Auth::user();
 @endphp
 
-    <nav x-data="{ open: false }" class="border-b border-white/5">
+    <nav x-data="{ open: false }" class="bg-[#0f0f11] border-b border-white/5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
 
                 {{-- Logo --}}
                 <a href="{{ url('/') }}" class="shrink-0 flex items-center gap-3">
-                    <div class="w-4 h-6 bg-[#E51920] -skew-x-12"></div>
-                    <span class="text-xl font-bold tracking-[0.2em] text-white uppercase">GAMEPEDIA</span>
+                    <div class="w-4 h-6 bg-red-600 -skew-x-12"></div>
+                    <span class="text-xl font-bold tracking-widest text-white">GAMEPEDIA</span>
                 </a>
 
                 {{-- Nav Links (Desktop) --}}
-                <div class="hidden sm:flex sm:items-center sm:gap-1">
-                    <a href="{{ url('/') }}"
-                       class="text-sm font-semibold tracking-wide px-4 py-2 rounded-md {{ request()->is('/') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                       HOME
-                    </a>
-                    <a href="{{ url('/dashboard') }}"
-                       class="text-sm font-semibold tracking-wide px-4 py-2 rounded-md {{ request()->is('dashboard*') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                       DASHBOARD
-                    </a>
-                    <a href="{{ url('/games') }}"
-                       class="text-sm font-semibold tracking-wide px-4 py-2 rounded-md {{ request()->is('games*') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                       GAMES
-                    </a>
-                    <a href="{{ url('/forum') }}"
-                       class="text-sm font-semibold tracking-wide px-4 py-2 rounded-md {{ request()->is('forum*') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                       FORUM
-                    </a>
-                    <a href="{{ url('/wishlist') }}"
-                       class="text-sm font-semibold tracking-wide px-4 py-2 rounded-md {{ request()->is('wishlist*') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                       WISHLIST
-                    </a>
+                <div class="hidden sm:flex sm:items-center sm:gap-6">
+                    @php
+                        $menuItems = [
+                            ['label' => 'HOME', 'url' => url('/'), 'active' => request()->is('/')],
+                            ['label' => 'DASHBOARD', 'url' => url('/dashboard'), 'active' => request()->is('dashboard*')],
+                            ['label' => 'GAMES', 'url' => url('/games'), 'active' => request()->is('games*') && !request()->is('wishlist*')],
+                            ['label' => 'FORUM', 'url' => url('/forum'), 'active' => request()->is('forum*') || request()->is('replies*')],
+                            ['label' => 'WISHLIST', 'url' => url('/wishlist'), 'active' => request()->is('wishlist*')],
+                        ];
+
+                        if ($user && $user->role === 'admin') {
+                            $menuItems[] = ['label' => 'ADMIN', 'url' => url('/admin'), 'active' => request()->is('admin*')];
+                        }
+                    @endphp
+
+                    @foreach ($menuItems as $item)
+                        <a href="{{ $item['url'] }}"
+                            class="nav-link {{ $item['active'] ? 'active' : '' }} text-sm uppercase tracking-widest">
+                            <span class="nav-label font-bold
+                                {{ $item['active'] ? 'text-white' : 'text-gray-400' }}">
+                                {{ $item['label'] }}
+                            </span>
+                        </a>
+                    @endforeach
                 </div>
 
-                {{-- Profile Dropdown (Desktop) --}}
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
+                {{-- Profile (Desktop) --}}
+                <div class="hidden sm:flex sm:items-center">
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition">
@@ -92,35 +124,22 @@
         {{-- Mobile Menu --}}
         <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-white/5">
             <div class="px-4 py-4 space-y-1">
-                <a href="{{ url('/') }}"
-                   class="block px-4 py-2 text-sm font-semibold tracking-wide rounded-md {{ request()->is('/') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                   HOME
-                </a>
-                <a href="{{ url('/dashboard') }}"
-                   class="block px-4 py-2 text-sm font-semibold tracking-wide rounded-md {{ request()->is('dashboard*') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                   DASHBOARD
-                </a>
-                <a href="{{ url('/games') }}"
-                   class="block px-4 py-2 text-sm font-semibold tracking-wide rounded-md {{ request()->is('games*') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                   GAMES
-                </a>
-                <a href="{{ url('/forum') }}"
-                   class="block px-4 py-2 text-sm font-semibold tracking-wide rounded-md {{ request()->is('forum*') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                   FORUM
-                </a>
-                <a href="{{ url('/wishlist') }}"
-                   class="block px-4 py-2 text-sm font-semibold tracking-wide rounded-md {{ request()->is('wishlist*') ? 'bg-[#E51920] text-white' : 'text-gray-400 hover:text-white transition' }}">
-                   WISHLIST
-                </a>
+                @foreach ($menuItems as $item)
+                    <a href="{{ $item['url'] }}"
+                        class="block px-4 py-2 text-sm font-bold uppercase tracking-widest rounded-md transition
+                            {{ $item['active'] ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white' }}">
+                        {{ $item['label'] }}
+                    </a>
+                @endforeach
                 <div class="border-t border-white/5 my-2"></div>
                 <a href="{{ route('profile.edit') }}"
-                   class="block px-4 py-2 text-sm font-semibold tracking-wide rounded-md text-gray-400 hover:text-white transition">
-                   Profile
+                    class="block px-4 py-2 text-sm font-bold tracking-widest rounded-md text-gray-400 hover:text-white transition">
+                    Profile
                 </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
-                            class="block w-full text-left px-4 py-2 text-sm font-semibold tracking-wide rounded-md text-gray-400 hover:text-white transition">
+                            class="block w-full text-left px-4 py-2 text-sm font-bold tracking-widest rounded-md text-gray-400 hover:text-white transition">
                         Log Out
                     </button>
                 </form>

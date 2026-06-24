@@ -3,7 +3,10 @@
 @section('content')
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold">Admin Panel</h1>
-        <a href="{{ route('dashboard') }}" class="text-sm text-gray-400 hover:text-white transition">&larr; Kembali ke Dashboard</a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.users.index') }}" class="text-sm text-gray-400 hover:text-white transition">Manajemen User &rarr;</a>
+            <a href="{{ route('dashboard') }}" class="text-sm text-gray-400 hover:text-white transition">&larr; Kembali ke Dashboard</a>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">

@@ -35,10 +35,30 @@
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     PLAY NOW
                 </button>
-                <button class="border border-gray-600 text-white font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    WISHLIST
-                </button>
+                @auth
+                    @if ($inWishlist)
+                        <button disabled
+                            class="border border-green-600 text-green-500 font-bold px-8 py-3 rounded-sm flex items-center gap-2 cursor-default">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            IN WISHLIST
+                        </button>
+                    @else
+                        <form action="{{ route('wishlist.add-from-game', $game['id']) }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                class="border border-gray-600 text-white font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition">
+                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                WISHLIST
+                            </button>
+                        </form>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}"
+                        class="border border-gray-600 text-white font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        WISHLIST
+                    </a>
+                @endauth
                 <a href="{{ route('forum.index', ['game_id' => $game['id']]) }}"
                     class="border border-gray-600 text-white font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition">
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>

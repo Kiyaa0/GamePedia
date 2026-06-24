@@ -18,7 +18,7 @@
                 <p class="text-gray-500 text-sm">Gagal memuat hero slider. Silakan coba lagi nanti.</p>
             </div>
         @else
-        <div id="heroSlider" class="relative rounded-xl overflow-hidden">
+        <div id="heroSlider" class="relative rounded-xl overflow-hidden group">
 
             <div class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth w-full hero-scrollbar-hidden">
 
@@ -80,6 +80,21 @@
 
             </div>
 
+            {{-- Prev / Next buttons --}}
+            <button id="heroPrev"
+                class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
+            <button id="heroNext"
+                class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+
             {{-- Indicators bottom-left --}}
             <div class="absolute bottom-6 left-8 flex gap-2 z-20">
                 @foreach ($games as $index => $game)
@@ -94,14 +109,28 @@
             (function () {
                 const container = document.querySelector('#heroSlider .overflow-x-auto');
                 const dots = document.querySelectorAll('.slide-dot');
+                const prevBtn = document.getElementById('heroPrev');
+                const nextBtn = document.getElementById('heroNext');
 
                 if (!container || dots.length === 0) return;
 
-                const updateDots = () => {
-                    const scrollLeft = container.scrollLeft;
-                    const slideWidth = container.clientWidth;
-                    const activeIndex = Math.round(scrollLeft / slideWidth);
+                const totalSlides = dots.length;
+                let autoPlayTimer = null;
+                const AUTO_PLAY_INTERVAL = 5000;
 
+                const getSlideWidth = () => container.clientWidth;
+
+                const getActiveIndex = () => {
+                    return Math.round(container.scrollLeft / getSlideWidth());
+                };
+
+                const goTo = (index) => {
+                    const target = Math.max(0, Math.min(index, totalSlides - 1));
+                    container.scrollTo({ left: target * getSlideWidth(), behavior: 'smooth' });
+                };
+
+                const updateDots = () => {
+                    const activeIndex = getActiveIndex();
                     dots.forEach((dot, i) => {
                         if (i === activeIndex) {
                             dot.className = 'slide-dot h-1 bg-red-600 w-8 rounded-full transition-all duration-300';
@@ -111,15 +140,71 @@
                     });
                 };
 
+                const startAutoPlay = () => {
+                    stopAutoPlay();
+                    autoPlayTimer = setInterval(() => {
+                        const next = getActiveIndex() + 1;
+                        if (next >= totalSlides) {
+                            goTo(0);
+                        } else {
+                            goTo(next);
+                        }
+                    }, AUTO_PLAY_INTERVAL);
+                };
+
+                const stopAutoPlay = () => {
+                    if (autoPlayTimer) {
+                        clearInterval(autoPlayTimer);
+                        autoPlayTimer = null;
+                    }
+                };
+
+                // Scroll events
                 container.addEventListener('scroll', updateDots);
 
+                // Dot clicks
                 dots.forEach((dot) => {
                     dot.addEventListener('click', () => {
-                        const index = parseInt(dot.dataset.slide);
-                        const slideWidth = container.clientWidth;
-                        container.scrollTo({ left: index * slideWidth, behavior: 'smooth' });
+                        stopAutoPlay();
+                        goTo(parseInt(dot.dataset.slide));
+                        startAutoPlay();
                     });
                 });
+
+                // Prev / Next buttons
+                prevBtn.addEventListener('click', () => {
+                    stopAutoPlay();
+                    goTo(getActiveIndex() - 1);
+                    startAutoPlay();
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    stopAutoPlay();
+                    goTo(getActiveIndex() + 1);
+                    startAutoPlay();
+                });
+
+                // Pause on hover
+                const slider = document.getElementById('heroSlider');
+                slider.addEventListener('mouseenter', stopAutoPlay);
+                slider.addEventListener('mouseleave', startAutoPlay);
+
+                // Keyboard nav
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') {
+                        stopAutoPlay();
+                        goTo(getActiveIndex() - 1);
+                        startAutoPlay();
+                    }
+                    if (e.key === 'ArrowRight') {
+                        stopAutoPlay();
+                        goTo(getActiveIndex() + 1);
+                        startAutoPlay();
+                    }
+                });
+
+                // Start autoplay
+                startAutoPlay();
             })();
         </script>
         @endif
