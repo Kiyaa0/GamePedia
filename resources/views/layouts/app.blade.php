@@ -79,34 +79,41 @@
                     @endforeach
                 </div>
 
-                {{-- Profile (Desktop) --}}
+                {{-- Auth (Desktop) --}}
                 <div class="hidden sm:flex sm:items-center">
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition">
-                                <span class="w-8 h-8 bg-[#E51920] rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                    {{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}
-                                </span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </button>
-                        </x-slot>
+                    @auth
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition">
+                                    <span class="w-8 h-8 bg-[#E51920] rounded-full flex items-center justify-center text-xs font-bold text-white">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                            </x-slot>
 
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('profile.edit')">
+                                    {{ __('Profile') }}
                                 </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
+
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link :href="route('logout')"
+                                            onclick="event.preventDefault(); this.closest('form').submit();">
+                                        {{ __('Log Out') }}
+                                    </x-dropdown-link>
+                                </form>
+                            </x-slot>
+                        </x-dropdown>
+                    @else
+                        <div class="flex items-center gap-4">
+                            <a href="{{ route('login') }}" class="text-xs font-bold text-gray-400 hover:text-white uppercase tracking-widest transition">Sign In</a>
+                            <a href="{{ route('register') }}" class="text-xs font-bold bg-[#E51920] text-white px-4 py-2 hover:bg-red-600 uppercase tracking-widest transition">Sign Up</a>
+                        </div>
+                    @endauth
                 </div>
 
                 {{-- Hamburger (Mobile) --}}
@@ -131,18 +138,30 @@
                         {{ $item['label'] }}
                     </a>
                 @endforeach
-                <div class="border-t border-white/5 my-2"></div>
-                <a href="{{ route('profile.edit') }}"
-                    class="block px-4 py-2 text-sm font-bold tracking-widest rounded-md text-gray-400 hover:text-white transition">
-                    Profile
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit"
-                            class="block w-full text-left px-4 py-2 text-sm font-bold tracking-widest rounded-md text-gray-400 hover:text-white transition">
-                        Log Out
-                    </button>
-                </form>
+                @auth
+                    <div class="border-t border-white/5 my-2"></div>
+                    <a href="{{ route('profile.edit') }}"
+                        class="block px-4 py-2 text-sm font-bold tracking-widest rounded-md text-gray-400 hover:text-white transition">
+                        Profile
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                                class="block w-full text-left px-4 py-2 text-sm font-bold tracking-widest rounded-md text-gray-400 hover:text-white transition">
+                            Log Out
+                        </button>
+                    </form>
+                @else
+                    <div class="border-t border-white/5 my-2"></div>
+                    <a href="{{ route('login') }}"
+                        class="block px-4 py-2 text-sm font-bold tracking-widest rounded-md text-gray-400 hover:text-white transition">
+                        Sign In
+                    </a>
+                    <a href="{{ route('register') }}"
+                        class="block px-4 py-2 text-sm font-bold tracking-widest rounded-md bg-[#E51920] text-white hover:bg-red-600 transition mt-2">
+                        Sign Up
+                    </a>
+                @endauth
             </div>
         </div>
     </nav>
