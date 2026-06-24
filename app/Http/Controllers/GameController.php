@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WishlistItem;
 use App\Services\RawgService;
+use App\Services\SteamService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,7 @@ class GameController extends Controller
 {
     public function __construct(
         protected RawgService $rawg,
+        protected SteamService $steam,
     ) {}
 
     public function index(Request $request)
@@ -98,6 +100,9 @@ class GameController extends Controller
                 ->exists()
             : false;
 
-        return view('games.show', compact('game', 'screenshots', 'inWishlist'));
+        $steamAppId = $game['steam_app_id'] ?? null;
+        $playerCount = $this->steam->getCurrentPlayers($steamAppId);
+
+        return view('games.show', compact('game', 'screenshots', 'inWishlist', 'playerCount', 'steamAppId'));
     }
 }

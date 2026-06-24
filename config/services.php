@@ -40,4 +40,8 @@ return [
         'base_url' => env('RAWG_BASE_URL', 'https://api.rawg.io/api'),
     ],
 
+    'steam' => [
+        'key' => env('STEAM_API_KEY'),
+    ],
+
 ];

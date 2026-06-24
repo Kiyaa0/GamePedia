@@ -30,11 +30,23 @@
                 released {{ isset($game['released']) ? \Carbon\Carbon::parse($game['released'])->format('Y') : 'TBA' }}
             </p>
             
-            <div class="flex gap-4 mt-8">
-                <button class="bg-white text-black font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-gray-200 transition">
+            @isset($playerCount)
+                <div class="flex items-center gap-2 mt-4">
+                    <span class="inline-block w-2 h-2 rounded-full bg-[#e21c1c] animate-pulse"></span>
+                    <span class="text-[11px] tracking-wider text-[#ccc] font-medium">
+                        {{ number_format($playerCount) }} sedang bermain
+                    </span>
+                </div>
+            @endisset
+
+            <div class="flex flex-wrap gap-4 mt-8">
+                <a href="{{ $steamAppId ? 'https://store.steampowered.com/app/'.$steamAppId : '#' }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="bg-white text-black font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-gray-200 transition">
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     PLAY NOW
-                </button>
+                </a>
                 @auth
                     @if ($inWishlist)
                         <button disabled
@@ -64,6 +76,7 @@
                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
                     DISKUSI
                 </a>
+
             </div>
         </div>
 

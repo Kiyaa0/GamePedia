@@ -8,10 +8,11 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WishlistController;
 use App\Services\RawgService;
+use App\Services\SteamService;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function (RawgService $rawg) {
+Route::get('/', function (RawgService $rawg, SteamService $steam) {
     try {
         $genres = collect($rawg->getGenres())->take(6);
     } catch (ConnectionException) {
@@ -32,7 +33,49 @@ Route::get('/', function (RawgService $rawg) {
         $heroGames = [];
     }
 
-    return view('welcome', compact('genres', 'trendingGames', 'heroGames'));
+    $newsItems = collect();
+    $seenAppIds = collect();
+
+    foreach ($trendingGames as $game) {
+        try {
+            $detail = $rawg->getGame($game['id']);
+            $appId = $detail['steam_app_id'] ?? null;
+            if ($appId && ! $seenAppIds->contains($appId)) {
+                $seenAppIds->push($appId);
+                $gameNews = $steam->getNewsForApp($appId, 2, 200);
+                if ($gameNews && count($gameNews) > 0) {
+                    $newsItems->push([
+                        'game_id' => $game['id'],
+                        'game_name' => $game['name'],
+                        'game_image' => $game['background_image'] ?? null,
+                        'news' => $gameNews,
+                    ]);
+                }
+            }
+        } catch (ConnectionException) {
+            continue;
+        }
+    }
+
+    if ($newsItems->isEmpty()) {
+        $fallbackAppIds = [730, 570, 440, 578080, 1085660, 252490, 105600, 431960];
+        foreach ($fallbackAppIds as $appId) {
+            $gameNews = $steam->getNewsForApp($appId, 2, 200);
+            if ($gameNews && count($gameNews) > 0) {
+                $newsItems->push([
+                    'game_id' => null,
+                    'game_name' => null,
+                    'game_image' => null,
+                    'news' => $gameNews,
+                ]);
+            }
+            if ($newsItems->count() >= 3) {
+                break;
+            }
+        }
+    }
+
+    return view('welcome', compact('genres', 'trendingGames', 'heroGames', 'newsItems'));
 });
 
 Route::get('/dashboard', function () {

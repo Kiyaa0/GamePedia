@@ -38,6 +38,47 @@
         </div>
     </section>
 
+    {{-- Berita Game --}}
+    @if ($newsItems->isNotEmpty())
+        <section class="pb-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center gap-3 mb-10">
+                    <span class="inline-block w-5 h-px bg-[#E51920]"></span>
+                    <h2 class="text-lg font-bold tracking-[0.15em] text-white uppercase">Berita Game</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    @foreach ($newsItems as $item)
+                        <div class="bg-[#1a1a1a] border border-white/5 rounded-lg overflow-hidden">
+                            <div class="aspect-video bg-[#0f0f11] overflow-hidden"
+                                 style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)">
+                                @if ($item['game_image'])
+                                    <img src="{{ $item['game_image'] }}" alt="{{ $item['game_name'] }}"
+                                        class="w-full h-full object-cover">
+                                @endif
+                            </div>
+                            <div class="p-4">
+                                <h3 class="text-xs font-bold tracking-widest text-gray-500 uppercase mb-3">{{ $item['game_name'] ?? 'Steam' }}</h3>
+                                <div class="space-y-3">
+                                    @foreach ($item['news'] as $news)
+                                        <a href="{{ $news['url'] }}" target="_blank" rel="noopener noreferrer"
+                                            class="block group">
+                                            <p class="text-sm font-semibold text-white group-hover:text-[#E51920] transition leading-snug">{{ $news['title'] }}</p>
+                                            <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::createFromTimestamp($news['date'])->diffForHumans() }}</p>
+                                        </a>
+                                        @if (! $loop->last)
+                                            <div class="border-t border-white/5"></div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
     {{-- Browse by Genre --}}
     <section class="pb-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
