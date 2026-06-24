@@ -62,10 +62,11 @@ Route::get('/', function (RawgService $rawg, SteamService $steam) {
         foreach ($fallbackAppIds as $appId) {
             $gameNews = $steam->getNewsForApp($appId, 2, 200);
             if ($gameNews && count($gameNews) > 0) {
+                $appDetails = $steam->getAppDetails($appId);
                 $newsItems->push([
                     'game_id' => null,
-                    'game_name' => null,
-                    'game_image' => null,
+                    'game_name' => $appDetails['name'] ?? null,
+                    'game_image' => $appDetails['header_image'] ?? null,
                     'news' => $gameNews,
                 ]);
             }
