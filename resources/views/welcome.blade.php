@@ -7,28 +7,39 @@
     {{-- Trending Now --}}
     <section class="py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-10">
-                <div class="flex items-center gap-3">
-                    <span class="inline-block w-5 h-px bg-[#E51920]"></span>
-                    <h2 class="text-lg font-bold tracking-[0.15em] text-white uppercase">Trending Now</h2>
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="inline-block w-6 h-[2px] bg-red-600"></span>
+                    <h2 class="text-white font-bold uppercase tracking-widest text-base">Trending Now</h2>
                 </div>
                 <a href="{{ route('games.index') }}" class="text-xs text-gray-500 hover:text-white uppercase tracking-widest transition">View All →</a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 @foreach($trendingGames as $game)
-                    <a href="{{ route('games.show', $game['id']) }}" class="group block">
-                        <div class="relative aspect-video bg-[#1a1a1a] overflow-hidden"
-                             style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)">
-                            <img src="{{ $game['background_image'] ?? 'https://via.placeholder.com/400x225/1a1a1a/666?text=No+Image' }}"
-                                alt="{{ $game['name'] }}"
-                                class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                                loading="lazy">
-                            <span class="absolute bottom-3 left-3 text-lg font-black text-[#E51920]">{{ number_format($game['rating'], 1) }}</span>
+                    <a href="{{ route('games.show', $game['id']) }}" class="group block cursor-pointer">
+                        <div class="relative aspect-video overflow-hidden
+                                    [clip-path:polygon(0_8px,8px_0,100%_0,100%_calc(100%-8px),calc(100%-8px)_100%,8px_100%,0_calc(100%-8px))]
+                                    shadow-[0_0_0_1px_rgba(229,25,32,0.25)]
+                                    group-hover:shadow-[0_0_20px_rgba(229,25,32,0.5)]
+                                    transition-shadow duration-500">
+                            <div class="absolute inset-0 bg-[#1a1a1a]">
+                                <img src="{{ $game['background_image'] ?? 'https://via.placeholder.com/400x225/1a1a1a/666?text=No+Image' }}"
+                                    alt="{{ $game['name'] }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    loading="lazy">
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                                 style="background: linear-gradient(135deg, rgba(229,25,32,0.15) 0%, transparent 50%, rgba(229,25,32,0.05) 100%);">
+                            </div>
+                            <span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-red-600 shadow-[0_0_6px_rgba(229,25,32,0.8)]"></span>
+                            <span class="absolute bottom-3 left-3 text-red-500 font-bold text-lg drop-shadow-[0_0_6px_rgba(229,25,32,0.6)]">{{ number_format($game['rating'], 1) }}</span>
+                            <span class="absolute bottom-3 right-3 text-[8px] text-red-400/50 font-mono uppercase tracking-[0.2em]">● LIVE</span>
                         </div>
                         <div class="mt-4">
-                            <h3 class="text-sm font-bold tracking-[0.15em] text-white uppercase">{{ $game['name'] }}</h3>
-                            <p class="text-xs text-gray-500 mt-1">
+                            <h3 class="text-sm font-bold text-white uppercase truncate group-hover:text-red-500 transition-colors">{{ $game['name'] }}</h3>
+                            <p class="text-xs text-gray-400 mt-1">
                                 {{ collect($game['platforms'] ?? [])->pluck('platform.name')->take(3)->implode(' · ') }}
                             </p>
                         </div>
@@ -65,6 +76,7 @@
                             'url' => $news['url'],
                             'date' => $news['date'],
                             'game_name' => $item['game_name'] ?? 'Steam',
+                            'game_image' => $item['game_image'] ?? null,
                         ]);
                     }
                 }
@@ -73,7 +85,7 @@
             @endphp
 
             <section>
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center justify-between mb-8">
                     <div class="flex items-center gap-2">
                         <span class="inline-block w-1 h-5 bg-[#E51920]"></span>
                         <h2 class="text-white font-bold uppercase tracking-widest text-base">BERITA GAME</h2>
@@ -81,44 +93,49 @@
                     <a href="#" class="text-sm text-gray-400 hover:text-white transition">Lihat semua berita →</a>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                     {{-- Featured News (Left) --}}
-                    <div class="bg-[#1a1a1a] rounded-md relative overflow-hidden group">
+                    <div class="md:col-span-8 group">
                         <div class="relative overflow-hidden"
-                             style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)">
-                            <img src="{{ $featuredGame['game_image'] ?? 'https://via.placeholder.com/600x400/1a1a1a/666?text=No+Image' }}"
+                             style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px))">
+                            <img src="{{ $featuredGame['game_image'] ?? 'https://via.placeholder.com/800x450/1a1a1a/666?text=No+Image' }}"
                                  alt="{{ $featuredGame['game_name'] }}"
-                                 class="w-full aspect-[3/2] object-cover group-hover:scale-105 transition duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/80 to-transparent"></div>
+                                 class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0f0f11] via-[#0f0f11]/60 to-transparent"></div>
                         </div>
-                        <div class="absolute bottom-0 left-0 right-0 p-5 z-10">
+                        <div class="mt-5 pl-1">
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="inline-block w-1 h-3 bg-[#E51920]"></span>
                                 <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{{ $featuredGame['game_name'] }}</span>
                             </div>
-                            <h3 class="text-lg font-bold text-white leading-tight">{{ $featuredNews['title'] }}</h3>
-                            <p class="text-xs text-gray-500 mt-2">{{ \Carbon\Carbon::createFromTimestamp($featuredNews['date'])->diffForHumans() }}</p>
+                            <h3 class="text-3xl font-bold text-white leading-tight lowercase">{{ $featuredNews['title'] }}</h3>
+                            <p class="text-xs text-gray-500 mt-3">{{ \Carbon\Carbon::createFromTimestamp($featuredNews['date'])->diffForHumans() }}</p>
                         </div>
                     </div>
 
-                    {{-- News List (Right) --}}
-                    <div class="space-y-4">
+                    {{-- Sidebar News (Right) --}}
+                    <div class="md:col-span-4 flex flex-col">
                         @foreach ($restNews as $news)
-                            <a href="{{ $news['url'] }}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-4 group">
-                                <div class="w-16 h-16 bg-gray-800 rounded flex-shrink-0 flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                                    </svg>
-                                </div>
+                            <a href="{{ $news['url'] }}" target="_blank" rel="noopener noreferrer"
+                               class="flex items-center gap-4 py-4 border-l-4 border-transparent group hover:border-l-4 hover:border-red-600 transition-all duration-300 pl-3 {{ !$loop->first ? 'border-t border-gray-800' : '' }}">
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">{{ $news['game_name'] }}</p>
-                                    <p class="text-sm font-semibold text-white group-hover:text-[#E51920] transition leading-snug">{{ $news['title'] }}</p>
-                                    <p class="text-xs text-gray-600 mt-1">{{ \Carbon\Carbon::createFromTimestamp($news['date'])->diffForHumans() }}</p>
+                                    <p class="text-sm font-bold text-white group-hover:text-red-500 transition-colors duration-300 leading-snug lowercase">{{ $news['title'] }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::createFromTimestamp($news['date'])->diffForHumans() }}</p>
+                                </div>
+                                <div class="w-20 h-16 flex-shrink-0 overflow-hidden bg-gray-800"
+                                     style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%)">
+                                    @if ($news['game_image'])
+                                        <img src="{{ $news['game_image'] }}" alt="{{ $news['game_name'] }}"
+                                             class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full bg-gray-700 flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                                            </svg>
+                                        </div>
+                                    @endif
                                 </div>
                             </a>
-                            @if (! $loop->last)
-                                <div class="border-t border-white/5"></div>
-                            @endif
                         @endforeach
                     </div>
                 </div>
@@ -128,7 +145,7 @@
         {{-- Browse by Genre --}}
         @if ($genres->isNotEmpty())
             <section class="mt-12 pb-20">
-                <div class="flex items-center gap-2 mb-6">
+                <div class="flex items-center gap-2 mb-8">
                     <span class="inline-block w-1 h-5 bg-[#E51920]"></span>
                     <h2 class="text-white font-bold uppercase tracking-widest text-base">BROWSE BY GENRE</h2>
                 </div>
