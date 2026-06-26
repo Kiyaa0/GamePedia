@@ -10,7 +10,7 @@
 @endphp
 
 <div class="group relative">
-    <div class="bg-[#141416] rounded-xl overflow-hidden border border-gray-800/60 transition-all duration-500 group-hover:border-red-600/40 group-hover:shadow-2xl group-hover:shadow-black/60 group-hover:-translate-y-2.5">
+    <div class="bg-[#141416] rounded-lg md:rounded-xl overflow-hidden border border-gray-800/60 transition-all duration-500 group-hover:border-red-600/40 group-hover:shadow-2xl group-hover:shadow-black/60 group-hover:-translate-y-2.5">
 
         {{-- Image --}}
         <div class="relative aspect-[3/4] bg-[#1a1a1a] overflow-hidden">
@@ -22,10 +22,9 @@
             {{-- Bottom Gradient Overlay --}}
             <div class="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent"></div>
 
-            {{-- Hover Actions Overlay --}}
-            <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 p-4">
+            {{-- Desktop: Hover Actions Overlay --}}
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 hidden md:flex flex-col items-center justify-center gap-3 p-4">
 
-                {{-- Change Status --}}
                 <form method="POST" action="{{ route('wishlist.update', $item) }}" class="w-full">
                     @csrf @method('PATCH')
                     <select name="status" onchange="this.form.submit()"
@@ -36,7 +35,6 @@
                     </select>
                 </form>
 
-                {{-- Delete --}}
                 <form method="POST" action="{{ route('wishlist.destroy', $item) }}"
                     onsubmit="return confirm('Hapus dari wishlist?')" class="w-full">
                     @csrf @method('DELETE')
@@ -49,17 +47,40 @@
         </div>
 
         {{-- Info Section --}}
-        <div class="p-4">
+        <div class="p-3 md:p-4">
             <a href="{{ route('games.show', $item->rawg_game_id) }}">
-                <h4 class="text-white font-bold text-sm leading-tight group-hover:text-red-500 transition lowercase line-clamp-2">
+                <h4 class="text-white font-bold text-xs md:text-sm leading-tight group-hover:text-red-500 transition lowercase line-clamp-2">
                     {{ $item->game_title }}
                 </h4>
             </a>
-            <div class="flex items-center gap-2 mt-2">
-                <span class="inline-block w-[14px] h-[14px] -skew-x-12 {{ $cfg['badge'] }}"></span>
-                <span class="text-[10px] font-bold uppercase tracking-widest {{ $cfg['text'] }}">
+
+            <div class="flex items-center gap-2 mt-1.5 md:mt-2">
+                <span class="inline-block w-2.5 h-2.5 md:w-[14px] md:h-[14px] -skew-x-12 {{ $cfg['badge'] }}"></span>
+                <span class="text-[9px] md:text-[10px] font-bold uppercase tracking-widest {{ $cfg['text'] }}">
                     {{ $cfg['label'] }}
                 </span>
+            </div>
+
+            {{-- Mobile: Actions below info --}}
+            <div class="flex md:hidden flex-col gap-1.5 mt-2.5">
+                <form method="POST" action="{{ route('wishlist.update', $item) }}">
+                    @csrf @method('PATCH')
+                    <select name="status" onchange="this.form.submit()"
+                        class="w-full bg-[#1a1a1a] border border-gray-800 text-white text-[10px] font-bold py-2 px-2.5 rounded-md appearance-none cursor-pointer focus:outline-none focus:border-red-500 transition uppercase tracking-widest text-center">
+                        <option value="want_to_buy" {{ $item->status === 'want_to_buy' ? 'selected' : '' }} class="text-gray-900">Want to Buy</option>
+                        <option value="playing" {{ $item->status === 'playing' ? 'selected' : '' }} class="text-gray-900">Playing</option>
+                        <option value="owned" {{ $item->status === 'owned' ? 'selected' : '' }} class="text-gray-900">Owned</option>
+                    </select>
+                </form>
+
+                <form method="POST" action="{{ route('wishlist.destroy', $item) }}"
+                    onsubmit="return confirm('Hapus dari wishlist?')">
+                    @csrf @method('DELETE')
+                    <button type="submit"
+                        class="w-full bg-red-600/20 hover:bg-red-600/40 text-red-500 text-[10px] font-bold py-2 rounded-md transition tracking-widest uppercase">
+                        Hapus
+                    </button>
+                </form>
             </div>
         </div>
     </div>

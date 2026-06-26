@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-2xl mx-auto px-4 md:px-0">
         <div class="mb-4">
-            <a href="{{ route('forum.show', $forumReply->forumPost) }}" class="text-gray-400 hover:text-white text-sm transition">Kembali</a>
+            <a href="{{ route('forum.show', $forumReply->forumPost) }}" class="text-gray-400 hover:text-white text-sm transition">&larr; Kembali</a>
         </div>
 
-        <h1 class="text-2xl font-bold mb-6">Edit Balasan</h1>
+        <h1 class="text-xl md:text-2xl font-bold mb-6">Edit Balasan</h1>
 
-        <div class="bg-[#1a1a1a] border border-white/5 rounded-lg p-6">
+        <div class="bg-[#1a1a1a] border border-white/5 rounded-lg p-4 md:p-6">
             <form action="{{ route('replies.update', $forumReply) }}" method="POST">
                 @csrf @method('PATCH')
 

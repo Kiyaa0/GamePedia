@@ -1,37 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-8 py-10 text-white">
+<div class="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10 text-white">
     
-    <div class="mb-6">
-        <div class="text-xs font-semibold tracking-widest uppercase text-gray-500">
+    <div class="mb-4 md:mb-6">
+        <div class="text-[10px] md:text-xs font-semibold tracking-widest uppercase text-gray-500">
             GAMES / {{ collect($game['genres'] ?? [])->pluck('name')->first() ?? 'GENRE' }} / <span class="text-red-600">{{ $game['name'] ?? 'UNKNOWN' }}</span>
         </div>
     </div>
 
-    <div class="w-full h-[400px] bg-[#1a1a1a] rounded-lg relative overflow-hidden mb-10 bg-cover bg-center" 
+    <div class="w-full h-[250px] md:h-[400px] bg-[#1a1a1a] rounded-lg relative overflow-hidden mb-6 md:mb-10 bg-cover bg-center" 
          style="background-image: url('{{ $game['background_image'] ?? '' }}');">
         
         <div class="absolute inset-0 bg-black/40"></div>
         
         <div class="absolute inset-0 opacity-20" style="background: repeating-linear-gradient(45deg, transparent, transparent 10px, #E51920 10px, #E51920 12px);"></div>
         
-        <div class="absolute bottom-6 left-6 bg-red-600 px-4 py-1 -skew-x-12 z-10">
-            <span class="block skew-x-12 text-sm font-bold tracking-wider">NEW UPDATE</span>
+        <div class="absolute bottom-4 md:bottom-6 left-4 md:left-6 bg-red-600 px-3 md:px-4 py-1 -skew-x-12 z-10">
+            <span class="block skew-x-12 text-[10px] md:text-sm font-bold tracking-wider">NEW UPDATE</span>
         </div>
     </div>
 
-    <div class="flex justify-between items-start mb-8">
-        <div>
-            <h1 class="text-5xl font-bold uppercase mb-2">{{ $game['name'] ?? 'Loading...' }}</h1>
-            <p class="text-sm text-gray-400 font-medium tracking-wide lowercase">
+    <div class="flex flex-col md:flex-row justify-between items-start mb-8 gap-4 md:gap-0">
+        <div class="w-full md:w-auto">
+            <h1 class="text-2xl md:text-5xl font-bold uppercase mb-2">{{ $game['name'] ?? 'Loading...' }}</h1>
+            <p class="text-xs md:text-sm text-gray-400 font-medium tracking-wide lowercase">
                 {{ collect($game['genres'] ?? [])->pluck('name')->implode(' · ') }} · 
                 {{ collect($game['platforms'] ?? [])->pluck('platform.name')->implode(' / ') }} · 
                 released {{ isset($game['released']) ? \Carbon\Carbon::parse($game['released'])->format('Y') : 'TBA' }}
             </p>
             
             @isset($playerCount)
-                <div class="flex items-center gap-2 mt-4">
+                <div class="flex items-center gap-2 mt-3 md:mt-4">
                     <span class="inline-block w-2 h-2 rounded-full bg-[#e21c1c] animate-pulse"></span>
                     <span class="text-[11px] tracking-wider text-[#ccc] font-medium">
                         {{ number_format($playerCount) }} sedang bermain
@@ -39,53 +39,53 @@
                 </div>
             @endisset
 
-            <div class="flex flex-wrap gap-4 mt-8">
+            <div class="flex flex-wrap gap-2 md:gap-4 mt-6 md:mt-8">
                 <a href="{{ $steamAppId ? 'https://store.steampowered.com/app/'.$steamAppId : '#' }}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="bg-white text-black font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-gray-200 transition">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    class="bg-white text-black font-bold px-5 md:px-8 py-2.5 md:py-3 rounded-sm flex items-center gap-2 hover:bg-gray-200 transition text-xs md:text-sm">
+                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     PLAY NOW
                 </a>
                 @auth
                     @if ($inWishlist)
                         <button disabled
-                            class="border border-green-600 text-green-500 font-bold px-8 py-3 rounded-sm flex items-center gap-2 cursor-default">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            class="border border-green-600 text-green-500 font-bold px-5 md:px-8 py-2.5 md:py-3 rounded-sm flex items-center gap-2 cursor-default text-xs md:text-sm">
+                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                             IN WISHLIST
                         </button>
                     @else
                         <form action="{{ route('wishlist.add-from-game', $game['id']) }}" method="POST">
                             @csrf
                             <button type="submit"
-                                class="border border-gray-600 text-white font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                class="border border-gray-600 text-white font-bold px-5 md:px-8 py-2.5 md:py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition text-xs md:text-sm">
+                                <svg class="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                                 WISHLIST
                             </button>
                         </form>
                     @endif
                 @else
                     <a href="{{ route('login') }}"
-                        class="border border-gray-600 text-white font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition">
-                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                        class="border border-gray-600 text-white font-bold px-5 md:px-8 py-2.5 md:py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition text-xs md:text-sm">
+                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                         WISHLIST
                     </a>
                 @endauth
                 <a href="{{ route('forum.index', ['game_id' => $game['id']]) }}"
-                    class="border border-gray-600 text-white font-bold px-8 py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
+                    class="border border-gray-600 text-white font-bold px-5 md:px-8 py-2.5 md:py-3 rounded-sm flex items-center gap-2 hover:bg-[#1a1a1a] transition text-xs md:text-sm">
+                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4 fill-current" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
                     DISKUSI
                 </a>
 
             </div>
         </div>
 
-        <div class="text-right">
-            <div class="flex items-baseline justify-end gap-1">
-                <span class="text-5xl font-bold text-red-600">{{ $game['rating'] ?? 'N/A' }}</span>
-                <span class="text-xl text-gray-500 font-bold">/10</span>
+        <div class="text-right w-full md:w-auto flex md:block items-center justify-between md:justify-end">
+            <div class="flex items-baseline gap-1">
+                <span class="text-3xl md:text-5xl font-bold text-red-600">{{ $game['rating'] ?? 'N/A' }}</span>
+                <span class="text-base md:text-xl text-gray-500 font-bold">/10</span>
             </div>
-            <div class="text-xs text-gray-400 font-bold tracking-widest mt-1">{{ $game['ratings_count'] ?? 0 }} REVIEWS</div>
+            <div class="text-[10px] md:text-xs text-gray-400 font-bold tracking-widest mt-0 md:mt-1">{{ $game['ratings_count'] ?? 0 }} REVIEWS</div>
         </div>
     </div>
 
