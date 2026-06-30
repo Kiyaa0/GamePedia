@@ -15,13 +15,26 @@ class WishlistController extends Controller
         protected RawgService $rawg,
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        $items = WishlistItem::where('user_id', auth()->id())
-            ->latest()
-            ->paginate(12);
+        $userId = auth()->id();
 
-        return view('wishlist.index', compact('items'));
+        $stats = [
+            'total' => WishlistItem::where('user_id', $userId)->count(),
+            'want_to_buy' => WishlistItem::where('user_id', $userId)->where('status', 'want_to_buy')->count(),
+            'playing' => WishlistItem::where('user_id', $userId)->where('status', 'playing')->count(),
+            'owned' => WishlistItem::where('user_id', $userId)->where('status', 'owned')->count(),
+        ];
+
+        $query = WishlistItem::where('user_id', $userId);
+
+        if ($request->filled('status') && in_array($request->status, ['want_to_buy', 'playing', 'owned'])) {
+            $query->where('status', $request->status);
+        }
+
+        $items = $query->latest()->paginate(12);
+
+        return view('wishlist.index', compact('items', 'stats'));
     }
 
     public function store(Request $request): RedirectResponse
