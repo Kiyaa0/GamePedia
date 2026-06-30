@@ -10,73 +10,83 @@ use App\Http\Controllers\WishlistController;
 use App\Services\RawgService;
 use App\Services\SteamService;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function (RawgService $rawg, SteamService $steam) {
-    try {
-        $genres = collect($rawg->getGenres())->take(6);
-    } catch (ConnectionException) {
-        $genres = collect([]);
-    }
-
-    try {
-        $trendingData = $rawg->getGames(['ordering' => '-rating', 'page_size' => 3]);
-        $trendingGames = $trendingData['results'] ?? [];
-    } catch (ConnectionException) {
-        $trendingGames = [];
-    }
-
-    try {
-        $heroData = $rawg->getGames(['ordering' => '-added', 'page_size' => 3, 'dates' => '2023-01-01,2026-12-31']);
-        $heroGames = $heroData['results'] ?? [];
-    } catch (ConnectionException) {
-        $heroGames = [];
-    }
-
-    $newsItems = collect();
-    $seenAppIds = collect();
-
-    foreach ($trendingGames as $game) {
+    $data = Cache::remember('homepage_data', 1800, function () use ($rawg, $steam) {
         try {
-            $detail = $rawg->getGame($game['id']);
-            $appId = $detail['steam_app_id'] ?? null;
-            if ($appId && ! $seenAppIds->contains($appId)) {
-                $seenAppIds->push($appId);
+            $genres = array_slice($rawg->getGenres(), 0, 6);
+        } catch (ConnectionException) {
+            $genres = [];
+        }
+
+        try {
+            $trendingData = $rawg->getGames(['ordering' => '-added', 'page_size' => 3]);
+            $trendingGames = $trendingData['results'] ?? [];
+        } catch (ConnectionException) {
+            $trendingGames = [];
+        }
+
+        try {
+            $heroData = $rawg->getGames(['ordering' => '-added', 'page_size' => 3, 'dates' => '2023-01-01,2026-12-31']);
+            $heroGames = $heroData['results'] ?? [];
+        } catch (ConnectionException) {
+            $heroGames = [];
+        }
+
+        $newsItems = [];
+        $seenAppIds = [];
+
+        foreach ($trendingGames as $game) {
+            try {
+                $detail = $rawg->getGame($game['id']);
+                $appId = $detail['steam_app_id'] ?? null;
+                if ($appId && ! in_array($appId, $seenAppIds)) {
+                    $seenAppIds[] = $appId;
+                    $gameNews = $steam->getNewsForApp($appId, 2, 200);
+                    if ($gameNews && count($gameNews) > 0) {
+                        $newsItems[] = [
+                            'game_id' => $game['id'],
+                            'game_name' => $game['name'],
+                            'game_image' => $game['background_image'] ?? null,
+                            'news' => $gameNews,
+                        ];
+                    }
+                }
+            } catch (ConnectionException) {
+                continue;
+            }
+        }
+
+        if (empty($newsItems)) {
+            $fallbackAppIds = [730, 570, 440, 578080, 1085660, 252490, 105600, 431960];
+            foreach ($fallbackAppIds as $appId) {
                 $gameNews = $steam->getNewsForApp($appId, 2, 200);
                 if ($gameNews && count($gameNews) > 0) {
-                    $newsItems->push([
-                        'game_id' => $game['id'],
-                        'game_name' => $game['name'],
-                        'game_image' => $game['background_image'] ?? null,
+                    $appDetails = $steam->getAppDetails($appId);
+                    $newsItems[] = [
+                        'game_id' => null,
+                        'game_name' => $appDetails['name'] ?? null,
+                        'game_image' => $appDetails['header_image'] ?? null,
                         'news' => $gameNews,
-                    ]);
+                    ];
+                }
+                if (count($newsItems) >= 3) {
+                    break;
                 }
             }
-        } catch (ConnectionException) {
-            continue;
         }
-    }
 
-    if ($newsItems->isEmpty()) {
-        $fallbackAppIds = [730, 570, 440, 578080, 1085660, 252490, 105600, 431960];
-        foreach ($fallbackAppIds as $appId) {
-            $gameNews = $steam->getNewsForApp($appId, 2, 200);
-            if ($gameNews && count($gameNews) > 0) {
-                $appDetails = $steam->getAppDetails($appId);
-                $newsItems->push([
-                    'game_id' => null,
-                    'game_name' => $appDetails['name'] ?? null,
-                    'game_image' => $appDetails['header_image'] ?? null,
-                    'news' => $gameNews,
-                ]);
-            }
-            if ($newsItems->count() >= 3) {
-                break;
-            }
-        }
-    }
+        return compact('genres', 'trendingGames', 'heroGames', 'newsItems');
+    });
 
-    return view('welcome', compact('genres', 'trendingGames', 'heroGames', 'newsItems'));
+    return view('welcome', [
+        'genres' => collect($data['genres']),
+        'trendingGames' => $data['trendingGames'],
+        'heroGames' => $data['heroGames'],
+        'newsItems' => collect($data['newsItems']),
+    ]);
 });
 
 Route::get('/dashboard', function () {

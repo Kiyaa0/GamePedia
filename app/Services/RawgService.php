@@ -90,41 +90,51 @@ class RawgService
 
     public function getGame(string $id): ?array
     {
-        $response = $this->request()->get("{$this->baseUrl}/games/{$id}", [
-            'key' => $this->apiKey,
-        ]);
+        $cacheKey = 'rawg_game_'.$id;
 
-        if ($response->notFound()) {
-            return null;
-        }
+        return Cache::remember($cacheKey, 3600, function () use ($id) {
+            $response = $this->request()->get("{$this->baseUrl}/games/{$id}", [
+                'key' => $this->apiKey,
+            ]);
 
-        $response->throw();
+            if ($response->notFound()) {
+                return null;
+            }
 
-        return $response->json();
+            $response->throw();
+
+            return $response->json();
+        });
     }
 
     public function getScreenshots(string $id): array
     {
-        $response = $this->request()->get("{$this->baseUrl}/games/{$id}/screenshots", [
-            'key' => $this->apiKey,
-        ]);
+        $cacheKey = 'rawg_screenshots_'.$id;
 
-        if ($response->notFound()) {
-            return [];
-        }
+        return Cache::remember($cacheKey, 3600, function () use ($id) {
+            $response = $this->request()->get("{$this->baseUrl}/games/{$id}/screenshots", [
+                'key' => $this->apiKey,
+            ]);
 
-        $response->throw();
+            if ($response->notFound()) {
+                return [];
+            }
 
-        return $response->successful() ? ($response->json()['results'] ?? []) : [];
+            $response->throw();
+
+            return $response->successful() ? ($response->json()['results'] ?? []) : [];
+        });
     }
 
     public function getGenres(): array
     {
-        $response = $this->request()->get("{$this->baseUrl}/genres", [
-            'key' => $this->apiKey,
-        ]);
+        return Cache::remember('rawg_genres', 86400, function () {
+            $response = $this->request()->get("{$this->baseUrl}/genres", [
+                'key' => $this->apiKey,
+            ]);
 
-        return $response->successful() ? ($response->json()['results'] ?? []) : [];
+            return $response->successful() ? ($response->json()['results'] ?? []) : [];
+        });
     }
 
     protected function request(): PendingRequest
